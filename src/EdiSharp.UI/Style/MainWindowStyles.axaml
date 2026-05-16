@@ -1,0 +1,57 @@
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<Button Content="Hi !"></Button>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="Button.main">
+		<Setter Property="BorderBrush" Value="Black"/>
+		<Setter Property="Background" Value="LightGray"/>
+
+		<Style Selector="^:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="Gray"/>
+			<Setter Property="Foreground" Value="Black"/>
+			<Setter Property="BorderBrush" Value="Black"/>
+		</Style>
+	</Style>
+
+	<Style Selector="RadioButton">
+		<Setter Property="Foreground" Value="Black"/>
+		<Style Selector="^:pointerover /template/ ContentPresenter">
+			<Setter Property="Foreground" Value="Black"/>
+		</Style>
+	</Style>
+
+	<Style Selector="RadioButton:unchecked /template/ Ellipse#OuterEllipse">
+		<Setter Property="Stroke" Value="LightGray" />
+		<Setter Property="Fill"   Value="Transparent" />
+		<Setter Property="Opacity" Value="1" />
+	</Style>
+
+	<Style Selector="RadioButton:unchecked /template/ Ellipse#CheckOuterEllipse">
+		<Setter Property="Opacity" Value="0" />
+	</Style>
+
+	<Style Selector="RadioButton:unchecked /template/ Ellipse#CheckGlyph">
+		<Setter Property="Opacity" Value="0" />
+	</Style>
+
+	<Style Selector="RadioButton:checked /template/ Ellipse#OuterEllipse">
+		<Setter Property="Opacity" Value="0" />
+	</Style>
+
+	<Style Selector="RadioButton:checked /template/ Ellipse#CheckOuterEllipse">
+		<Setter Property="Opacity" Value="1" />
+		<Setter Property="Stroke" Value="Gray" />
+		<Setter Property="Fill"   Value="Gray" />
+	</Style>
+
+	<Style Selector="RadioButton:checked /template/ Ellipse#CheckGlyph">
+		<Setter Property="Opacity" Value="1" />
+		<Setter Property="Fill"   Value="White" />
+		<Setter Property="Stroke" Value="Transparent" />
+	</Style>
+
+</Styles>

@@ -10,6 +10,7 @@
   
     <Application.Styles>
         <FluentTheme />
+       	<StyleInclude Source="avares://EdiSharp.UI/Style/MainWindowStyles.axaml" />
     </Application.Styles>
 
 </Application>
