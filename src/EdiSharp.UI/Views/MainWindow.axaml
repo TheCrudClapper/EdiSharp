@@ -28,8 +28,10 @@
 		<StackPanel Grid.Column="0" Margin="10" Spacing="10">
 			<TextBlock Text="Input" FontSize="18" FontWeight="Bold" Foreground="black"/>
 
-			<Button Classes="main" Content="Choose EDIFACT File" Foreground="black"
-					/>
+			<Button Classes="main"
+					Command="{Binding PickFileCommand}"
+					Content="{Binding FileName}"
+					Foreground="black"/>
 
 			<TextBlock Text="Output" FontSize="18" FontWeight="Bold" Foreground="black"/>
 			<StackPanel Orientation="Horizontal">
@@ -40,23 +42,23 @@
 
 			<TextBlock Text="Options" FontSize="18" FontWeight="Bold" Foreground="black"/>
 			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-				<CheckBox/>
+				<CheckBox IsChecked="{Binding Validate}"/>
 				<TextBlock Text="Validate" VerticalAlignment="Center" Margin="0,0,0,1"/>
 			</StackPanel>
-			
+
 			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-				<CheckBox/>
+				<CheckBox IsChecked="{Binding ShowRawSegments}"/>
 				<TextBlock Text="Show Raw Segments" VerticalAlignment="Center" Margin="0,0,0,1"/>
 			</StackPanel>
 
-			<Button Classes="main" Content="Parse" Foreground="black"/>
+			<Button Classes="main" Content="Parse" Command="{Binding ParseCommand}" Foreground="black"/>
 
 		</StackPanel>
 
 		<!-- RIGHT PANEL -->
 		<TabControl Grid.Column="1" Margin="10">
 			<TabItem Header="Raw" Foreground="Black">
-				<TextBox  AcceptsReturn="True" Foreground="black"/>
+				<TextBox AcceptsReturn="True" TextWrapping="Wrap" Foreground="black"/>
 			</TabItem>
 
 			<TabItem Header="Segments">
