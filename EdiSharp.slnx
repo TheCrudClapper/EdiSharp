@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/EdiSharp.Core/EdiSharp.Core.csproj" />
+  <Project Path="src/EdiSharp.UI/EdiSharp.UI.csproj" />
+</Solution>
