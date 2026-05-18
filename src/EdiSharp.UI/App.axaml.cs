@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using EdiSharp.Core.Implementations;
+using EdiSharp.Core.Interfaces;
 using EdiSharp.UI.ViewModels;
 using EdiSharp.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,8 @@ namespace EdiSharp.UI
         {
             var services = new ServiceCollection();
 
+            services.AddSingleton<IEdiProcessingService, EdiProcessingService>();
+
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>
             {
@@ -37,7 +41,7 @@ namespace EdiSharp.UI
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>()),
+                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>(), provider.GetRequiredService<IEdiProcessingService>()),
                 };
             }
 

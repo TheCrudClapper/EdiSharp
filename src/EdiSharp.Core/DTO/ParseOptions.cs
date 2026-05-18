@@ -2,11 +2,10 @@
 using System.Net.Http.Headers;
 
 namespace EdiSharp.Core.DTO;
-public class ParseOptions
+public record ParseOptions
 {
-    InputType InputType { get; set; }
-    OutputType OutputType { get; set; }
-    bool Validate { get; set; }
-    bool ShowRawSegments { get; set; }
-
+    public required InputType InputType { get; init; }
+    public required OutputType OutputType { get; init; }
+    public required bool Validate { get; init; }
+    public required bool ShowRawSegments { get; init; }
 }

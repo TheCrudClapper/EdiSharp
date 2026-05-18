@@ -1,3 +1,3 @@
 ﻿namespace EdiSharp.Core.DTO;
 
-public record EdiParseRequest(FileStream fileStream, ParseOptions options);
+public record EdiParseRequest(byte[] fileBytes, ParseOptions options);
