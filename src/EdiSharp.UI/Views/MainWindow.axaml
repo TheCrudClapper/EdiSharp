@@ -14,6 +14,7 @@
 		Icon="/Assets/avalonia-logo.ico"
 		Title="EdiSharp.UI">
 
+
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
 		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -36,10 +37,17 @@
 				<RadioButton Content="XML" GroupName="OutputType"/>
 			</StackPanel>
 
-			
+
 			<TextBlock Text="Options" FontSize="18" FontWeight="Bold" Foreground="black"/>
-			<CheckBox Content="Validate"  Foreground="black" />
-			<CheckBox Content="Show raw segments"  Foreground="black" />
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+				<CheckBox/>
+				<TextBlock Text="Validate" VerticalAlignment="Center" Margin="0,0,0,1"/>
+			</StackPanel>
+			
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+				<CheckBox/>
+				<TextBlock Text="Show Raw Segments" VerticalAlignment="Center" Margin="0,0,0,1"/>
+			</StackPanel>
 
 			<Button Classes="main" Content="Parse" Foreground="black"/>
 
@@ -47,7 +55,7 @@
 
 		<!-- RIGHT PANEL -->
 		<TabControl Grid.Column="1" Margin="10">
-			<TabItem Header="Raw">
+			<TabItem Header="Raw" Foreground="Black">
 				<TextBox  AcceptsReturn="True" Foreground="black"/>
 			</TabItem>
 
