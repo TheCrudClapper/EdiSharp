@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using EdiSharp.Core.Enums;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EdiSharp.UI.ViewModels;
@@ -35,6 +36,9 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor)
 
     [ObservableProperty]
     private string _fileName = "Choose EDIFACT File";
+
+    [ObservableProperty]
+    private string? _rawDocument;
 
     public Stream? Stream { get; set; }
 
@@ -84,6 +88,8 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor)
         _inputType = detectedType.Value;
         Error = null;
         FileName = file.Name;
+
+        await BuildRawFilePreview(Stream);
     }
 
     [RelayCommand]
@@ -92,10 +98,27 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor)
         Console.WriteLine("Parsing file...");
     }
 
+    private async Task BuildRawFilePreview(Stream stream) 
+    {
+        var sb = new StringBuilder();
+        using var reader = new StreamReader(stream);
 
+        stream.Position = 0;
+
+        string? line;
+        int lineNumber = 1;
+        while ((line = await reader.ReadLineAsync()) != null) 
+        {
+            sb.AppendLine($"{lineNumber++:000}: {line}");
+        }
+
+        RawDocument = sb.ToString();
+    }
+
+  
     private static async Task<InputType?> DetermineInputType(Stream stream) 
     {
-        var reader = new StreamReader(stream, leaveOpen: true);
+        using var reader = new StreamReader(stream, leaveOpen: true);
 
         stream.Position = 0;
 

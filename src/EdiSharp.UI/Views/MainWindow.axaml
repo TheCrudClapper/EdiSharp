@@ -58,7 +58,12 @@
 		<!-- RIGHT PANEL -->
 		<TabControl Grid.Column="1" Margin="10">
 			<TabItem Header="Raw" Foreground="Black">
-				<TextBox AcceptsReturn="True" TextWrapping="Wrap" Foreground="black"/>
+				<TextBox AcceptsReturn="True"
+						 TextWrapping="Wrap"
+						 IsReadOnly="True"
+						 CaretBrush="Transparent"
+						 Text="{Binding RawDocument}"
+						 Foreground="black"/>
 			</TabItem>
 
 			<TabItem Header="Segments">
