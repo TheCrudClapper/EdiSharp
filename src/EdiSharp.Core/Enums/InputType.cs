@@ -2,6 +2,6 @@
 
 public enum InputType
 {
-    Edifact,
+    EDIFACT,
     X12
 }
