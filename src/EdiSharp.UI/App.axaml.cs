@@ -1,10 +1,11 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using EdiSharp.UI.ViewModels;
 using EdiSharp.UI.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 
 namespace EdiSharp.UI
@@ -18,13 +19,25 @@ namespace EdiSharp.UI
 
         public override void OnFrameworkInitializationCompleted()
         {
+            var services = new ServiceCollection();
+
+            //Top level
+            services.AddSingleton<Func<TopLevel?>>(x => () =>
+            {
+                if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime topDesktop)
+                    return TopLevel.GetTopLevel(topDesktop.MainWindow);
+
+                return null;
+            });
+
+
+            var provider = services.BuildServiceProvider();
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-                // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>()),
                 };
             }
 

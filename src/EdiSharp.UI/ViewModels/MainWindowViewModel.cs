@@ -1,11 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Threading.Tasks;
 
 namespace EdiSharp.UI.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor) : ViewModelBase
 {
     
     //MVVM Fields
@@ -28,7 +29,14 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     public async Task PickFile()
     {
-        Console.WriteLine("Picking File");
+        var topLevel = topLevelAccessor();
+        if (topLevel is null)
+            return;
+
+        var file = await topLevel.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions()
+        {
+            AllowMultiple = false,
+        });
     }
     
     [RelayCommand]
