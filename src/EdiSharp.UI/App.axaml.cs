@@ -2,13 +2,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using EdiSharp.Core.Factories;
 using EdiSharp.Core.Implementations;
 using EdiSharp.Core.Interfaces;
 using EdiSharp.UI.ViewModels;
 using EdiSharp.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 
 namespace EdiSharp.UI
 {
@@ -24,6 +24,9 @@ namespace EdiSharp.UI
             var services = new ServiceCollection();
 
             services.AddSingleton<IEdiProcessingService, EdiProcessingService>();
+            services.AddSingleton<IEdiTokenizerFactory, EdiTokenizerFactory>();
+            services.AddSingleton<IEdiTokenizer ,EdifactTokenizer>();
+            services.AddSingleton<IEdiTokenizer ,X12Tokenizer>();
 
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>

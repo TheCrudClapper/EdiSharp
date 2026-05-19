@@ -5,8 +5,16 @@ namespace EdiSharp.Core.Implementations;
 
 public class EdiProcessingService : IEdiProcessingService
 {
+    private readonly IEdiTokenizerFactory _tokenizerFactory;
+    public EdiProcessingService(IEdiTokenizerFactory tokenizerFactory)
+    {
+        _tokenizerFactory = tokenizerFactory;
+    }
+
     public async Task ProcessAsync(EdiParseRequest request)
     {
-        await Task.Delay(10000);
+        var tokenizer = _tokenizerFactory.Create(request.options.InputType);
+
+        var tokenizedEdi = tokenizer.Tokenize(request.fileBytes);
     }
 }

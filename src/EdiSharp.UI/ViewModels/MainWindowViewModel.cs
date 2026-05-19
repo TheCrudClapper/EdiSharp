@@ -93,7 +93,6 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiP
             Error = "Failed to read selected file";
             return;
         }
-        
 
         var detectedType = DetermineInputType(_fileBytes);
 
