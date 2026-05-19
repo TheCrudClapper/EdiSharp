@@ -18,6 +18,8 @@ public class EdifactDelimiters
     //Makes next delimiter being treated as normal character not delimiters
     public char ReleaseCharacter { get; init; } = '?';
 
+    public char RepetitionSeparator { get; init; } = '*';
+
     //Specifies which separator is used for decimal places
     public char DecimalSeparator { get; init; } = '.';
 }
