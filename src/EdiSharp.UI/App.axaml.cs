@@ -2,9 +2,14 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using EdiSharp.Core.Factories;
-using EdiSharp.Core.Implementations;
+using EdiSharp.Core.Abstractions;
+using EdiSharp.Core.EncodingDetectors;
+using EdiSharp.Core.Factories.Abstractions;
+using EdiSharp.Core.Factories.Implementations;
 using EdiSharp.Core.Interfaces;
+using EdiSharp.Core.ServiceContracts;
+using EdiSharp.Core.Services;
+using EdiSharp.Core.Tokenizers;
 using EdiSharp.UI.ViewModels;
 using EdiSharp.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,8 +30,9 @@ namespace EdiSharp.UI
 
             services.AddSingleton<IEdiProcessingService, EdiProcessingService>();
             services.AddSingleton<IEdiTokenizerFactory, EdiTokenizerFactory>();
-            services.AddSingleton<IEdiTokenizer ,EdifactTokenizer>();
-            services.AddSingleton<IEdiTokenizer ,X12Tokenizer>();
+            services.AddSingleton<IEdiTokenizer, EdifactTokenizer>();
+            services.AddSingleton<IEdiTokenizer, X12Tokenizer>();
+            services.AddSingleton<IEdiEncodingDetector, EdifactEncodingDetector>();
 
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>

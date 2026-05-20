@@ -1,7 +1,7 @@
 ﻿using EdiSharp.Core.Enums;
 using EdiSharp.Core.Models;
 
-namespace EdiSharp.Core.Interfaces;
+namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IEdiTokenizer
 {

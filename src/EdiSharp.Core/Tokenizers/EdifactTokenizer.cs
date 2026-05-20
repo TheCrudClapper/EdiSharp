@@ -1,9 +1,9 @@
 ﻿using EdiSharp.Core.Enums;
-using EdiSharp.Core.Interfaces;
+using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.Models;
 using System.Text;
 
-namespace EdiSharp.Core.Implementations;
+namespace EdiSharp.Core.Tokenizers;
 
 public class EdifactTokenizer : IEdiTokenizer
 {

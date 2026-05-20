@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
-using EdiSharp.Core.Interfaces;
+using EdiSharp.Core.ServiceContracts;
 using System;
 using System.IO;
 using System.Text;

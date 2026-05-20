@@ -1,8 +1,12 @@
 ﻿namespace EdiSharp.Core.Models;
 
 /// <summary>
-/// Represents edifact delimiters, with default variants
+/// Defines the set of EDIFACT delimiter characters used to parse and generate segments, data elements, components,
+/// repetitions, release escapes, and decimal separators.
 /// </summary>
+/// <remarks>Defaults: ComponentSeparator=':', ElementSeparator='+', SegmentTerminator (single quote, '),
+/// ReleaseCharacter='?', RepetitionSeparator='*', DecimalSeparator='.'. Intended to be provided to parsers and writers
+/// or adjusted to match UNA/UNB header values or local conventions.</remarks>
 public class EdifactDelimiters
 {
 

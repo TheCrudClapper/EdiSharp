@@ -1,7 +1,8 @@
-﻿using EdiSharp.Core.DTO;
-using EdiSharp.Core.Interfaces;
+﻿using EdiSharp.Core.Abstractions;
+using EdiSharp.Core.DTO;
+using EdiSharp.Core.ServiceContracts;
 
-namespace EdiSharp.Core.Implementations;
+namespace EdiSharp.Core.Services;
 
 public class EdiProcessingService : IEdiProcessingService
 {

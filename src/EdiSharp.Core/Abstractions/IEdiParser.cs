@@ -1,6 +1,6 @@
 ﻿using EdiSharp.Core.Models;
 
-namespace EdiSharp.Core.Interfaces;
+namespace EdiSharp.Core.Abstractions;
 
 //Parse Segments to Intermediate EdiDocument Model
 public interface IEdiParser
