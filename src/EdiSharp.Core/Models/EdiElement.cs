@@ -9,5 +9,5 @@
 public record EdiElement
 {
     public required string Raw { get; init; }
-    public required string[] Components { get; init; }
+    public required IReadOnlyList<string> Components { get; init; }
 }

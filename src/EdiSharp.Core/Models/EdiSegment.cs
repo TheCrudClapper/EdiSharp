@@ -9,5 +9,5 @@
 public record EdiSegment
 {
     public required string Tag { get; init; }
-    public required List<EdiElement> Elements { get; init; }
+    public required IReadOnlyList<EdiElement> Elements { get; init; }
 }
