@@ -7,6 +7,7 @@ using EdiSharp.Core.Enums;
 using EdiSharp.Core.ServiceContracts;
 using EdiSharp.UI.Helpers;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -58,6 +59,9 @@ public partial class MainWindowViewModel(
     [ObservableProperty]
     private string? _rawDocument;
 
+    [ObservableProperty]
+    private ObservableCollection<StatusMessageViewModel> _statusMessages = new();
+
     //Selected file bytes
     private byte[]? _fileBytes;
     private FileInspectionResult? FileInspectionResult { get; set; }
@@ -94,6 +98,7 @@ public partial class MainWindowViewModel(
             && extension != ".txt")
         {
             Error = "Wrong file extension. Supported types: .edi, .edifact, .x12";
+            PushMessage(Error, true);
             return;
         }
 
@@ -104,6 +109,7 @@ public partial class MainWindowViewModel(
         catch
         {
             Error = "Failed to read selected file";
+            PushMessage(Error, true);
             return;
         }
 
@@ -121,6 +127,7 @@ public partial class MainWindowViewModel(
         SegmentCount = result.Value.SegmentCount;
         EncodingName = result.Value.Encoding.EncodingName;
         EdiVersion = result.Value.Version;
+        Error = null;
         InputTypeText = InputTypeToStringConverter.ToStringInputType(result.Value.InputType);
     }
 
@@ -160,6 +167,22 @@ public partial class MainWindowViewModel(
         RawDocument = null;
         SegmentCount = 0;
         FileInspectionResult = null;
+    }
+
+    private void PushMessage(string message, bool isError) 
+    {
+        StatusMessages.Add(new StatusMessageViewModel
+        {
+            IsError = isError,
+            Message = message,
+            TimeStamp = DateTime.Now.TimeOfDay
+        });
+    }
+
+    [RelayCommand]
+    public void FlushMessages() 
+    {
+        StatusMessages.Clear();
     }
 }
 
