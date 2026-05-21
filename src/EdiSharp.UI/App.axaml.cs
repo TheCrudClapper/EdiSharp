@@ -11,6 +11,7 @@ using EdiSharp.Core.Interfaces;
 using EdiSharp.Core.ServiceContracts;
 using EdiSharp.Core.Services;
 using EdiSharp.Core.Tokenizers;
+using EdiSharp.Core.VersionExtractors;
 using EdiSharp.UI.ViewModels;
 using EdiSharp.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,8 @@ namespace EdiSharp.UI
             services.AddSingleton<IEdiEncodingDetector, X12EncodingDetector>();
             services.AddSingleton<IEdiDelimiterDetector, EdifactDelimitersDetector>();
             services.AddSingleton<IEdiDelimiterDetectorFactory, EdiDelimiterDetectorFactory>();
+            services.AddSingleton<IEdiVersionExtractor, EdifactVersionExtractor>();
+            services.AddSingleton<IEdiVersionExtractorFactory, EdiVersionExtractorFactory>();
 
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>

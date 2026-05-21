@@ -171,7 +171,7 @@ public partial class MainWindowViewModel(
 
     private void PushMessage(string message, bool isError) 
     {
-        StatusMessages.Add(new StatusMessageViewModel
+        StatusMessages.Insert(0, new StatusMessageViewModel
         {
             IsError = isError,
             Message = message,

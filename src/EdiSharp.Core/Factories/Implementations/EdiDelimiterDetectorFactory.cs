@@ -12,8 +12,6 @@ public class EdiDelimiterDetectorFactory : IEdiDelimiterDetectorFactory
         _map = detectors.ToDictionary(d => d.InputType);
     }
 
-    public IEdiDelimiterDetector Create(InputType inputType)
-    {
-        return _map[inputType];
-    }
+    public IEdiDelimiterDetector? TryCreate(InputType inputType)
+        => _map.TryGetValue(inputType, out var detector) ? detector : null;
 }

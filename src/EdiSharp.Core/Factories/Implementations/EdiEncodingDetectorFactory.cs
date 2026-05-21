@@ -12,8 +12,6 @@ public class EdiEncodingDetectorFactory : IEdiEncodingDetectorFactory
         _map = detectors.ToDictionary(d => d.InputType);
     }
 
-    public IEdiEncodingDetector Create(InputType inputType)
-    {
-        return _map[inputType] ?? throw new ArgumentException();
-    }
+    public IEdiEncodingDetector? TryCreate(InputType inputType)
+        => _map.TryGetValue(inputType, out var detector) ? detector : null;
 }
