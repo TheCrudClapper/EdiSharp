@@ -3,97 +3,412 @@
 		xmlns:vm="using:EdiSharp.UI.ViewModels"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		mc:Ignorable="d"
+		d:DesignWidth="1100"
+		d:DesignHeight="700"
 		x:Class="EdiSharp.UI.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
-		Width="900"
-		Foreground="black"
-		Height="600"
+		Width="1100"
+		Height="700"
+		MinWidth="1000"
+		MinHeight="650"
 		Background="#FFFAF0"
-		CanResize="true"
-		Icon="/Assets/icon.png"
-		Title="EdiSharp.UI">
-
+		Foreground="Black"
+		Title="EdiSharp">
 
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
+	<Grid ColumnDefinitions="320,*"
+		  RowDefinitions="*,Auto">
 
-	<Grid ColumnDefinitions="250,*" RowDefinitions="95*,5*">
+		<!-- SIDEBAR -->
+		<Border Grid.Column="0"
+				Background="{DynamicResource BackgroundHardBrushColor}"
+				BorderBrush="{DynamicResource BorderBrushColor}"
+				BorderThickness="0,0,1,0">
 
-		<!-- LEFT PANEL -->
-		<StackPanel Grid.Column="0" Margin="10" Spacing="10">
-			<TextBlock Text="Input" FontSize="18" FontWeight="Bold" Foreground="black"/>
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
 
-			<Button Classes="main"
-					Command="{Binding PickFileCommand}"
-					Content="{Binding FileName}"
-					Foreground="black"/>
+				<StackPanel Margin="20"
+							Spacing="18">
 
-			<Button Classes="main"
-					Command="{Binding DiscardSelectedFileCommand}"
-					Content="Discard File"
-					IsVisible="{Binding IsDiscardButtonVisible }"
-					Foreground="black"/>
+					<!-- HEADER -->
+					<StackPanel Spacing="2">
+						<TextBlock Text="EdiSharp"
+								   FontSize="28"
+								   FontWeight="Bold"/>
 
-			<TextBlock Text="Output" FontSize="18" FontWeight="Bold" Foreground="black"/>
-			<StackPanel Orientation="Horizontal">
-				<RadioButton Margin="0,0,5,0" Content="JSON" GroupName="OutputType" IsChecked="{Binding IsJsonChecked}"/>
-				<RadioButton Content="XML" GroupName="OutputType" IsChecked="{Binding IsXmlChecked}"/>
+						<TextBlock Text="EDI Parser and Validator"
+								   Opacity="0.7"/>
+					</StackPanel>
+
+					<!-- INPUT -->
+					<StackPanel Spacing="8">
+
+						<TextBlock Text="Input"
+								   FontSize="18"
+								   FontWeight="SemiBold"/>
+
+						<Button Classes="main"
+								HorizontalAlignment="Stretch"
+								Command="{Binding PickFileCommand}">
+
+							<TextBlock Text="Select EDI File" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Button>
+
+						<Button Classes="main"
+								IsVisible="{Binding IsDiscardButtonVisible}"
+								HorizontalAlignment="Stretch"
+								Command="{Binding DiscardSelectedFileCommand}">
+
+							<TextBlock Text="Discard Selection" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Button>
+
+						<Border Background="{DynamicResource BackgroundMediumBrushColor}"
+								BorderBrush="{DynamicResource BorderBrushColor}"
+								BorderThickness="1"
+								CornerRadius="8"
+								Padding="12">
+
+							<StackPanel Spacing="6">
+
+								<TextBlock Text="Selected File"
+										   FontWeight="Bold"
+										   FontSize="15"/>
+
+								<TextBlock Text="{Binding FileName}"
+										   TextWrapping="Wrap"/>
+
+								<Border Background="{DynamicResource BorderBrushColor}"
+										Margin="0,5"
+										Height="1" 
+										HorizontalAlignment="Stretch"></Border>
+
+								<Grid ColumnDefinitions="Auto,*"
+									  RowDefinitions="Auto,Auto,Auto"
+									  RowSpacing="4"
+									  ColumnSpacing="10">
+
+									<TextBlock Grid.Row="0"
+											   Text="Format:"
+											   FontWeight="SemiBold"/>
+
+									<TextBlock Grid.Row="0"
+											   Grid.Column="1"
+											   Text="{Binding EdiVersion}"/>
+
+									<TextBlock Grid.Row="1"
+											   Text="Segments:"
+											   FontWeight="SemiBold"/>
+
+									<TextBlock Grid.Row="1"
+											   Grid.Column="1"
+											   Text="{Binding SegmentCount}"/>
+
+									<TextBlock Grid.Row="2"
+											   Text="Encoding:"
+											   FontWeight="SemiBold"/>
+
+									<TextBlock Grid.Row="2"
+											   Grid.Column="1"
+											   Text="{Binding EncodingName}"/>
+
+								</Grid>
+
+							</StackPanel>
+
+						</Border>
+
+					</StackPanel>
+
+					<!-- OUTPUT -->
+					<StackPanel Spacing="8">
+
+						<TextBlock Text="Output"
+								   FontSize="18"
+								   FontWeight="SemiBold"/>
+
+						<Border Background="{DynamicResource BackgroundMediumBrushColor}"
+								BorderBrush="#D8C9B5"
+								BorderThickness="1"
+								CornerRadius="8"
+								Padding="12">
+
+							<StackPanel Spacing="10">
+
+								<RadioButton Content="JSON"
+											 GroupName="OutputType"
+											 IsChecked="{Binding IsJsonChecked}"/>
+
+								<RadioButton Content="XML"
+											 GroupName="OutputType"
+											 IsChecked="{Binding IsXmlChecked}"/>
+
+							</StackPanel>
+					<!-- OPTIONS -->
+
+						</Border>
+
+					</StackPanel>
+
+					<StackPanel Spacing="8">
+
+						<TextBlock Text="Options"
+								   FontSize="18"
+								   FontWeight="SemiBold"/>
+
+						<Border Background="{DynamicResource BackgroundMediumBrushColor}"
+								BorderBrush="{DynamicResource BorderBrushColor}"
+								BorderThickness="1"
+								CornerRadius="8"
+								Padding="12">
+
+							<StackPanel Spacing="12">
+
+								<CheckBox Content="Validate Message"
+										  IsChecked="{Binding Validate}"/>
+
+								<CheckBox Content="Pretty Print Output"
+										  />
+
+							</StackPanel>
+
+						</Border>
+
+					</StackPanel>
+
+					<!-- ACTIONS -->
+					<StackPanel Spacing="10">
+
+						<Button Classes="contrast"
+								Height="35"
+								FontWeight="Bold"
+								HorizontalAlignment="Stretch"
+								Command="{Binding ParseCommand}">
+
+							<TextBlock Text="Parse" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Button>
+
+						<Button Classes="main"
+								FontWeight="Bold"
+								HorizontalAlignment="Stretch"
+								>
+							<TextBlock Text="Save Output" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Button>
+
+					</StackPanel>
+
+					<!-- STATUS -->
+					<Border Background="{DynamicResource BackgroundMediumBrushColor}"
+							BorderBrush="{DynamicResource BorderBrushColor}"
+							BorderThickness="1"
+							CornerRadius="8"
+							Padding="12">
+
+						<StackPanel Spacing="6">
+
+							<TextBlock Text="Status"
+									   FontWeight="SemiBold"/>
+
+							<TextBlock Text="Here status message"
+									   TextWrapping="Wrap"/>
+
+						</StackPanel>
+
+					</Border>
+
+				</StackPanel>
+
+			</ScrollViewer>
+
+		</Border>
+
+		<!-- MAIN CONTENT -->
+		<Grid Grid.Column="1"
+			  RowDefinitions="Auto,*">
+
+			<!-- TOP BAR -->
+			<Border Background="{DynamicResource BackgroundLightBrush}"
+					CornerRadius="8"
+					Margin="25,25,25,0"
+					BorderBrush="{DynamicResource BorderBrushColor}"
+					BorderThickness="1"
+					Padding="16,12">
+
+				<Grid ColumnDefinitions="*,Auto">
+
+					<StackPanel Spacing="2">
+
+						<TextBlock Text="{Binding FileName}"
+								   FontWeight="SemiBold"
+								   FontSize="16"/>
+
+						<StackPanel Orientation="Horizontal">
+
+							<TextBlock Opacity="0.7">
+								<Run Text="{Binding SegmentCount}"/>
+								<Run Text="Segments"/>
+							</TextBlock>
+
+							<TextBlock Text=" · " FontWeight="700" Opacity="0.7"/>
+
+							<TextBlock Text="{Binding EdiVersion}"
+									   Opacity="0.7"/>
+
+							<TextBlock Text=" · " FontWeight="700" Opacity="0.7"/>
+
+							<TextBlock Text="{Binding EncodingName}"
+									   Opacity="0.7"/>
+
+						</StackPanel>
+
+
+					</StackPanel>
+
+					<Border Grid.Column="1"
+							Background="{DynamicResource ContrastBrushColor}"
+							CornerRadius="8"
+							Height="30"
+							Padding="14,6">
+
+						<TextBlock Text="{Binding InputTypeText}"
+								   Foreground="White"
+								   FontWeight="Bold"/>
+
+					</Border>
+
+				</Grid>
+
+			</Border>
+
+			<!-- TABS -->
+			<TabControl Grid.Row="1"
+						Margin="14">
+
+				<!-- RAW -->
+				<TabItem Header="Raw">
+
+					<TextBox Text="{Binding RawDocument}"
+							 Classes="documentTextBox"/>
+
+				</TabItem>
+
+				<!-- SEGMENTS -->
+				<TabItem Header="Segments">
+					<!--
+					<ListBox ItemsSource="{Binding Segments}">
+
+					<ListBox.ItemTemplate>
+					<DataTemplate>
+
+					<Border Margin="0,0,0,6"
+					Padding="10"
+					CornerRadius="6"
+					Background="#FFF8EE"
+					BorderBrush="#E2D5C5"
+					BorderThickness="1">
+
+					<StackPanel Orientation="Horizontal"
+					Spacing="10">
+
+					<Border Background="#E8D8C4"
+					Padding="8,3"
+					CornerRadius="5">
+
+					<TextBlock Text="{Binding Tag}"
+					FontWeight="Bold"/>
+
+					</Border>
+
+					<TextBlock Text="{Binding Raw}"
+					TextWrapping="Wrap"/>
+
+					</StackPanel>
+
+					</Border>
+
+					</DataTemplate>
+					</ListBox.ItemTemplate>
+
+					</ListBox>-->
+
+				</TabItem>
+
+				<!-- TREE -->
+				<TabItem Header="Tree">
+
+					<TreeView/>
+
+				</TabItem>
+
+				<!-- VALIDATION -->
+				<!--<TabItem Header="Validation">
+
+				<ListBox ItemsSource="{Binding ValidationMessages}">
+
+				<ListBox.ItemTemplate>
+				<DataTemplate>
+
+				<Border Margin="0,0,0,6"
+				Padding="10"
+				CornerRadius="6"
+				BorderThickness="1">
+
+				<StackPanel Orientation="Horizontal"
+				Spacing="8">
+
+				<TextBlock Text="{Binding Severity}"
+				FontWeight="Bold"/>
+
+				<TextBlock Text="{Binding Message}"
+				TextWrapping="Wrap"/>
+
+				</StackPanel>
+
+				</Border>
+
+				</DataTemplate>
+				</ListBox.ItemTemplate>
+
+				</ListBox>
+
+				</TabItem>-->
+
+				<!-- OUTPUT -->
+				<TabItem Header="Output">
+					<TextBox Classes="documentTextBox"/>
+				</TabItem>
+
+			</TabControl>
+
+		</Grid>
+
+		<!-- ERROR BAR -->
+		<Border Grid.ColumnSpan="2"
+				Grid.Row="1"
+				Background="#FFE5E5"
+				BorderBrush="#D66"
+				BorderThickness="0,1,0,0"
+				Padding="12"
+				IsVisible="{Binding IsErrorVisible}">
+
+			<StackPanel Orientation="Horizontal"
+						Spacing="8">
+
+				<TextBlock Text="ERROR"
+						   Foreground="DarkRed"
+						   FontWeight="Bold"/>
+
+				<TextBlock Text="{Binding Error}"
+						   Foreground="DarkRed"
+						   TextWrapping="Wrap"/>
+
 			</StackPanel>
 
+		</Border>
 
-			<TextBlock Text="Options" FontSize="18" FontWeight="Bold" Foreground="black"/>
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-				<CheckBox IsChecked="{Binding Validate}"/>
-				<TextBlock Text="Validate" VerticalAlignment="Center" Margin="0,0,0,1"/>
-			</StackPanel>
-
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-				<CheckBox IsChecked="{Binding ShowRawSegments}"/>
-				<TextBlock Text="Show Raw Segments" VerticalAlignment="Center" Margin="0,0,0,1"/>
-			</StackPanel>
-
-			<Button Classes="main" 
-					Content="Parse" 
-					Command="{Binding ParseCommand}" 
-					Foreground="black"/>
-
-		</StackPanel>
-
-		<!-- RIGHT PANEL -->
-		<TabControl Grid.Column="1" Margin="10">
-			<TabItem Header="Raw" Foreground="Black">
-				<TextBox AcceptsReturn="True"
-						 TextWrapping="Wrap"
-						 IsReadOnly="True"
-						 CaretBrush="Transparent"
-						 Text="{Binding RawDocument}"
-						 Foreground="black"/>
-			</TabItem>
-
-			<TabItem Header="Segments">
-				<ListBox Foreground="black" />
-			</TabItem>
-
-			<TabItem Header="Tree">
-				<TreeView Foreground="black"/>
-			</TabItem>
-
-			<TabItem Header="Output">
-				<TextBox  AcceptsReturn="True" Foreground="black"/>
-			</TabItem>
-		</TabControl>
-
-		<StackPanel Grid.ColumnSpan="2" Grid.Row="1" Background="LightGray">
-			<TextBlock HorizontalAlignment="Center" Padding="2" IsVisible="{Binding IsErrorVisible }">
-				<Run Text="Error: " Foreground="DarkRed" FontWeight="700" />
-				<Run Text="{Binding Error}" Foreground="DarkRed"/>
-			</TextBlock>
-		</StackPanel>
 	</Grid>
 
 </Window>

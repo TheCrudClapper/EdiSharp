@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using EdiSharp.Core.Abstractions;
+using EdiSharp.Core.DelimiterDetectors;
 using EdiSharp.Core.EncodingDetectors;
 using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.Factories.Implementations;
@@ -31,8 +32,13 @@ namespace EdiSharp.UI
             services.AddSingleton<IEdiProcessingService, EdiProcessingService>();
             services.AddSingleton<IEdiTokenizerFactory, EdiTokenizerFactory>();
             services.AddSingleton<IEdiTokenizer, EdifactTokenizer>();
+            services.AddSingleton<IFileInspectionService, FileInspectionService>();
             services.AddSingleton<IEdiTokenizer, X12Tokenizer>();
+            services.AddSingleton<IEdiEncodingDetectorFactory, EdiEncodingDetectorFactory>();
             services.AddSingleton<IEdiEncodingDetector, EdifactEncodingDetector>();
+            services.AddSingleton<IEdiEncodingDetector, X12EncodingDetector>();
+            services.AddSingleton<IEdiDelimiterDetector, EdifactDelimitersDetector>();
+            services.AddSingleton<IEdiDelimiterDetectorFactory, EdiDelimiterDetectorFactory>();
 
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>
@@ -50,7 +56,7 @@ namespace EdiSharp.UI
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>(), provider.GetRequiredService<IEdiProcessingService>()),
+                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>(), provider.GetRequiredService<IEdiProcessingService>(), provider.GetRequiredService<IFileInspectionService>()),
                 };
             }
 

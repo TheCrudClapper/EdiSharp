@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using EdiSharp.Core.Enums;
+using System.Text;
 
 namespace EdiSharp.Core.Interfaces;
 
 public interface IEdiEncodingDetector
 {
-    Encoding DetermineEncodingType(byte[] fileBytes);
+    InputType InputType { get; }
+    Encoding DetermineEncoding(byte[] fileBytes);
 }

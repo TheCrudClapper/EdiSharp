@@ -4,16 +4,32 @@
 
 	<!--Button Styles-->
 	<Style Selector="Button.main">
-		<Setter Property="BorderBrush" Value="Black"/>
-		<Setter Property="Background" Value="LightGray"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="Height" Value="35"/>
+		<Setter Property="CornerRadius" Value="8"/>
+		<Setter Property="Background" Value="{DynamicResource BackgroundMediumBrushColor}"/>
 
 		<Style Selector="^:pointerover /template/ ContentPresenter">
-			<Setter Property="Background" Value="Gray"/>
+			<Setter Property="Background" Value="{DynamicResource BackgroundLightBrushColor}"/>
 			<Setter Property="Foreground" Value="Black"/>
-			<Setter Property="BorderBrush" Value="Black"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
 		</Style>
 	</Style>
 
+	<Style Selector="Button.contrast">
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Height" Value="35"/>
+		<Setter Property="CornerRadius" Value="8"/>
+		<Setter Property="Background" Value="{DynamicResource ContrastBrushColor}"/>
+
+		<Style Selector="^:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource BackgroundMediumBrushColor}"/>
+			<Setter Property="Foreground" Value="Black"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+		</Style>
+	</Style>
 
 	<!--Radio Button Styles-->
 	<Style Selector="RadioButton">
@@ -24,7 +40,7 @@
 	</Style>
 
 	<Style Selector="RadioButton:unchecked /template/ Ellipse#OuterEllipse">
-		<Setter Property="Stroke" Value="LightGray" />
+		<Setter Property="Stroke" Value="{DynamicResource BorderBrushColor}" />
 		<Setter Property="Fill"   Value="Transparent" />
 		<Setter Property="Opacity" Value="1" />
 	</Style>
@@ -43,8 +59,8 @@
 
 	<Style Selector="RadioButton:checked /template/ Ellipse#CheckOuterEllipse">
 		<Setter Property="Opacity" Value="1" />
-		<Setter Property="Stroke" Value="Gray" />
-		<Setter Property="Fill"   Value="Gray" />
+		<Setter Property="Stroke" Value="Black" />
+		<Setter Property="Fill"   Value="{DynamicResource ContrastBrushColor}" />
 	</Style>
 
 	<Style Selector="RadioButton:checked /template/ Ellipse#CheckGlyph">
@@ -75,6 +91,32 @@
 		</Style>
 	</Style>
 
+	<Style Selector="TextBox.documentTextBox">
+		<Setter Property="Background" Value="{DynamicResource BackgroundLightBrushColor}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+		<Setter Property="IsReadOnly" Value="True"/>
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="TextWrapping" Value="NoWrap"/>
+		<Setter Property="FontFamily" Value="Consolas"/>
+		<Setter Property="CaretBrush" Value="Transparent"/>
+		<Setter Property="AcceptsReturn" Value="True"/>
+		<Style Selector="^:pointerover">
+			<Setter Property="Background" Value="{DynamicResource BackgroundLightBrushColor}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+		</Style>
+
+		<Style Selector="^:pointerover, ^:focus">
+			<Setter Property="Foreground" Value="Black" />
+			<Setter Property="CaretBrush" Value="Transparent"/>
+		</Style>
+
+		<Style Selector="^:pointerover /template/ Border#PART_BorderElement,
+		^:focus /template/ Border#PART_BorderElement">
+			<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}" />
+			<Setter Property="Background" Value="{DynamicResource BackgroundLightBrushColor}" />
+		</Style>
+	</Style>
+
 	<!--CheckBox Styles-->
 	<Style Selector="CheckBox:unchecked /template/ Border#NormalRectangle">
 		<Setter Property="Background" Value="Transparent"/>
@@ -83,6 +125,46 @@
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="BorderBrush" Value="LightGray"/>
 		</Style>
+	</Style>
+
+	
+	<!-- Checkbox Styles -->
+	<Style Selector="CheckBox:unchecked /template/ Border#NormalRectangle">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+	</Style>
+
+	<Style Selector="CheckBox:unchecked:pointerover /template/ Border#NormalRectangle">
+		<Setter Property="Background" Value="{DynamicResource BackgroundLightBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+	</Style>
+
+	<Style Selector="CheckBox /template/ Border#NormalRectangle">
+		<Setter Property="Background" Value="{DynamicResource BackgroundLightBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+	</Style>
+
+	<Style Selector="CheckBox:pointerover /template/ Border#NormalRectangle">
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrushColor}"/>
+		<Setter Property="Background" Value="{DynamicResource BackgroundHardBrushColor}"/>
+	</Style>
+
+	<Style Selector="CheckBox /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Foreground" Value="Black"/>
+	</Style>
+
+	<Style Selector="CheckBox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Foreground" Value="Black"/>
+	</Style>
+
+	<Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+		<Setter Property="BorderBrush" Value="Black"/>
+		<Setter Property="Background" Value="{DynamicResource ContrastBrushColor}"/>
+	</Style>
+
+	<Style Selector="CheckBox:disabled /template/ Border#NormalRectangle">
+		<Setter Property="BorderBrush" Value="Gray"/>
+		<Setter Property="Background" Value="DarkGray"/>
 	</Style>
 
 </Styles>

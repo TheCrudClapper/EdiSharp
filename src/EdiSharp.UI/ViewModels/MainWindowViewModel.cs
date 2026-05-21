@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
 using EdiSharp.Core.ServiceContracts;
+using EdiSharp.UI.Helpers;
 using System;
 using System.IO;
 using System.Text;
@@ -12,18 +13,19 @@ using System.Threading.Tasks;
 
 namespace EdiSharp.UI.ViewModels;
 
-public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiProcessingService service)
+public partial class MainWindowViewModel(
+    Func<TopLevel?> topLevelAccessor,
+    IEdiProcessingService service,
+    IFileInspectionService fileInspectionService)
     : ViewModelBase
 {
 
     #region Fields
     private const string DefaultFileText = "Choose EDIFACT File";
+    private const string DefaultFileDetailsText = "Unknown";
 
     [ObservableProperty]
     private bool _validate = false;
-
-    [ObservableProperty]
-    private bool _showRawSegments = false;
 
     [ObservableProperty]
     private bool _isJsonChecked = false;
@@ -43,12 +45,24 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiP
     private string _fileName = DefaultFileText;
 
     [ObservableProperty]
+    private string _ediVersion = DefaultFileDetailsText;
+
+    [ObservableProperty]
+    private string _inputTypeText = DefaultFileDetailsText;
+
+    [ObservableProperty]
+    private int _segmentCount = 0;
+
+    [ObservableProperty]
+    private string _encodingName = DefaultFileDetailsText;
+
+    [ObservableProperty]
     private string? _rawDocument;
 
     //Selected file bytes
     private byte[]? _fileBytes;
+    private FileInspectionResult? FileInspectionResult { get; set; }
 
-    private InputType? _inputType;
     #endregion
 
     partial void OnErrorChanged(string? value)
@@ -94,19 +108,21 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiP
             return;
         }
 
-        var detectedType = DetermineInputType(_fileBytes);
+        var result = fileInspectionService.Inspect(_fileBytes);
 
-        if (detectedType is null) 
+        if (result.IsFailure) 
         {
-            Error = "Provided file is not valid EDIFACT or X12 file";
+            Error = result.Error.Description;
             return;
         }
 
-        _inputType = detectedType.Value;
-        Error = null;
+        FileInspectionResult = result.Value;
+        RawDocument = result.Value.RawDocument;
         FileName = file.Name;
-
-        BuildRawFilePreview(_fileBytes);
+        SegmentCount = result.Value.SegmentCount;
+        EncodingName = result.Value.Encoding.EncodingName;
+        EdiVersion = result.Value.Version;
+        InputTypeText = InputTypeToStringConverter.ToStringInputType(result.Value.InputType);
     }
 
     [RelayCommand]
@@ -117,7 +133,7 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiP
             IsXmlChecked ? OutputType.XML :
             null;
 
-        if (_fileBytes is null || _inputType is null || outputType is null)
+        if (_fileBytes is null || outputType is null || FileInspectionResult is null)
             return;
 
         var request = new EdiParseRequest(
@@ -125,26 +141,13 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiP
             new ParseOptions()
             {
                 Validate = Validate,
-                InputType = _inputType.GetValueOrDefault(),
-                ShowRawSegments = ShowRawSegments,
+                Delimiters = FileInspectionResult.Delimiters,
+                Encoding = FileInspectionResult.Encoding,
+                InputType = FileInspectionResult.InputType,
                 OutputType = outputType.GetValueOrDefault()
             });
 
         await service.ProcessAsync(request);
-    }
-
-    private void BuildRawFilePreview(byte[] fileBytes) 
-    {
-        var sb = new StringBuilder();
-        var text = Encoding.UTF8.GetString(fileBytes);
-
-        var lines = text.Split('\n');
-        for(int i = 0; i < lines.Length; i++) 
-        {
-            sb.AppendLine($"{i + 1:000}: {lines[i].TrimEnd('\r')}");
-        }
-
-        RawDocument = sb.ToString();
     }
 
     [RelayCommand]
@@ -152,28 +155,12 @@ public partial class MainWindowViewModel(Func<TopLevel?> topLevelAccessor, IEdiP
     {
         _fileBytes = null;
         FileName = DefaultFileText;
-        _inputType = null;
+        EncodingName = DefaultFileDetailsText;
+        EdiVersion = DefaultFileDetailsText;
+        InputTypeText = DefaultFileDetailsText;
         RawDocument = null;
-    }
-
-    private static InputType? DetermineInputType(byte[] fileBytes) 
-    {
-        var text = Encoding.UTF8.GetString(fileBytes);
-
-        var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-        if (lines.Length == 0)
-            return null;
-        
-        var firstLine = lines[0].Trim();
-
-        if (firstLine.StartsWith("ISA", StringComparison.Ordinal))
-            return InputType.X12;
-
-        if (firstLine.StartsWith("UNA", StringComparison.Ordinal) || firstLine.StartsWith("UNB", StringComparison.Ordinal))
-            return InputType.EDIFACT;
-
-        return null;
+        SegmentCount = 0;
+        FileInspectionResult = null;
     }
 }
 

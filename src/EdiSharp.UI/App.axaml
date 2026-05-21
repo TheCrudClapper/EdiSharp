@@ -1,16 +1,32 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="EdiSharp.UI.App"
-             xmlns:local="using:EdiSharp.UI"
-             RequestedThemeVariant="Default">
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="EdiSharp.UI.App"
+			 xmlns:local="using:EdiSharp.UI"
+			 RequestedThemeVariant="Default">
 
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-  
-    <Application.Styles>
-        <FluentTheme />
-       	<StyleInclude Source="avares://EdiSharp.UI/Style/MainWindowStyles.axaml" />
-    </Application.Styles>
+	<Application.DataTemplates>
+		<local:ViewLocator/>
+	</Application.DataTemplates>
+
+	<Application.Resources>
+
+		<Color x:Key="MainLight">#fdf9f4</Color>
+		<Color x:Key="MainMedium">#F7F1E7</Color>
+		<Color x:Key="MainHard">#F4EBDD</Color>
+		<Color x:Key="Border">#D8C9B5</Color>
+		<Color x:Key="Contrast">#433029</Color>
+
+		<SolidColorBrush x:Key="BackgroundLightBrushColor" Color="{StaticResource MainLight}" />
+		<SolidColorBrush x:Key="BackgroundMediumBrushColor" Color="{StaticResource MainMedium}" />
+		<SolidColorBrush x:Key="BackgroundHardBrushColor" Color="{StaticResource MainHard}" />
+		<SolidColorBrush x:Key="BorderBrushColor" Color="{StaticResource Border}" />
+		<SolidColorBrush x:Key="ContrastBrushColor" Color="{StaticResource Contrast}" />
+
+	</Application.Resources>
+
+	<Application.Styles>
+		<FluentTheme />
+		<StyleInclude Source="avares://EdiSharp.UI/Style/MainWindowStyles.axaml" />
+	</Application.Styles>
 
 </Application>

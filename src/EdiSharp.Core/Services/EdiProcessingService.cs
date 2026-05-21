@@ -1,5 +1,5 @@
-﻿using EdiSharp.Core.Abstractions;
-using EdiSharp.Core.DTO;
+﻿using EdiSharp.Core.DTO;
+using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.ServiceContracts;
 
 namespace EdiSharp.Core.Services;
@@ -16,6 +16,6 @@ public class EdiProcessingService : IEdiProcessingService
     {
         var tokenizer = _tokenizerFactory.Create(request.options.InputType);
 
-        var tokenizedEdi = tokenizer.Tokenize(request.fileBytes);
+        var tokenizedEdi = tokenizer.Tokenize(request.fileBytes, request.options.Encoding, request.options.Delimiters);
     }
 }
