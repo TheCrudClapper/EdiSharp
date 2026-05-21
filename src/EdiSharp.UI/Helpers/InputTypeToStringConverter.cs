@@ -4,7 +4,7 @@ namespace EdiSharp.UI.Helpers;
 
 public static class InputTypeToStringConverter
 {
-    public static string ToStringInputType(InputType inputType) 
+    public static string ToStringInputType(InputType inputType)
     {
         return inputType switch
         {

@@ -73,7 +73,7 @@ public class FileInspectionService : IFileInspectionService
         return sb.ToString();
     }
 
-    private static int CountSegments(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters) 
+    private static int CountSegments(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
     {
         var text = encoding.GetString(fileBytes);
         return text.Split(delimiters.SegmentTerminator).Length;

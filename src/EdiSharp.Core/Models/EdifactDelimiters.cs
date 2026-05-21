@@ -17,7 +17,7 @@ public class EdifactDelimiters
     public char ElementSeparator { get; init; } = '+';
 
     //Ends whole segment
-    public char SegmentTerminator { get; init; } = '\'' ;
+    public char SegmentTerminator { get; init; } = '\'';
 
     //Makes next delimiter being treated as normal character not delimiters
     public char ReleaseCharacter { get; init; } = '?';

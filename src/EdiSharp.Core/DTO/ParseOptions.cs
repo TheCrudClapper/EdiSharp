@@ -1,9 +1,9 @@
 ﻿using EdiSharp.Core.Enums;
 using EdiSharp.Core.Models;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace EdiSharp.Core.DTO;
+
 public record ParseOptions
 {
     public required InputType InputType { get; init; }

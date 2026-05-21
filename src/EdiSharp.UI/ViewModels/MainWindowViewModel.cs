@@ -8,7 +8,6 @@ using EdiSharp.Core.ServiceContracts;
 using EdiSharp.UI.Helpers;
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EdiSharp.UI.ViewModels;
@@ -30,9 +29,9 @@ public partial class MainWindowViewModel(
     [ObservableProperty]
     private bool _isJsonChecked = false;
 
-    public bool IsDiscardButtonVisible 
+    public bool IsDiscardButtonVisible
         => RawDocument is not null;
-    public bool IsErrorVisible 
+    public bool IsErrorVisible
         => Error is not null;
 
     [ObservableProperty]
@@ -89,9 +88,9 @@ public partial class MainWindowViewModel(
         var file = files[0];
 
         var extension = Path.GetExtension(file.Name);
-        if (extension != ".edi" 
-            && extension != ".edifact" 
-            && extension != ".x12" 
+        if (extension != ".edi"
+            && extension != ".edifact"
+            && extension != ".x12"
             && extension != ".txt")
         {
             Error = "Wrong file extension. Supported types: .edi, .edifact, .x12";
@@ -110,7 +109,7 @@ public partial class MainWindowViewModel(
 
         var result = fileInspectionService.Inspect(_fileBytes);
 
-        if (result.IsFailure) 
+        if (result.IsFailure)
         {
             Error = result.Error.Description;
             return;
@@ -151,7 +150,7 @@ public partial class MainWindowViewModel(
     }
 
     [RelayCommand]
-    private void DiscardSelectedFile() 
+    private void DiscardSelectedFile()
     {
         _fileBytes = null;
         FileName = DefaultFileText;

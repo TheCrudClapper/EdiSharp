@@ -32,12 +32,12 @@ public class EdifactTokenizer : IEdiTokenizer
             string tag;
             string[] elementsRaw;
 
-            if (firstSeparatorIndex < 0) 
+            if (firstSeparatorIndex < 0)
             {
                 tag = segment;
                 elementsRaw = [];
             }
-            else 
+            else
             {
                 tag = segment[..firstSeparatorIndex];
 
