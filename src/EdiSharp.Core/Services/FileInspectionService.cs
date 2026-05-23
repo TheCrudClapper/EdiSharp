@@ -30,13 +30,13 @@ public class FileInspectionService : IFileInspectionService
             return Result.Failure<FileInspectionResult>(Error.Create("File is not recognized as EDIFACT or X12. Expected ISA or UNB/UNA header."));
 
         var encodingDetector = _detectorFactory.TryCreate(inputType.Value);
-        if(encodingDetector is null)
+        if (encodingDetector is null)
             return Result.Failure<FileInspectionResult>(Error.Create("Failed to detect file encoding. The file may contain unsupported or corrupted byte sequences."));
 
         Encoding encoding = encodingDetector.DetermineEncoding(fileBytes);
 
         var delimiterDetector = _delimiterFactory.TryCreate(inputType.Value);
-        if(delimiterDetector is null)
+        if (delimiterDetector is null)
             return Result.Failure<FileInspectionResult>(Error.Create("EDI delimiters could not be determined. Check if file uses standard EDIFACT or X12 syntax."));
 
         var delimiters = delimiterDetector.DetectDelimiters(fileBytes, encoding);
@@ -47,14 +47,14 @@ public class FileInspectionService : IFileInspectionService
 
         var version = versionExtractor.Extract(fileBytes, encoding, delimiters);
         if (version is null)
-            return Result.Failure<FileInspectionResult>(Error.Create("Unable to detect EDI file encoding. Ensure file is not corrupted or uses supported format."));
+            return Result.Failure<FileInspectionResult>(Error.Create("Unable to detect EDI file version. Ensure file is not corrupted or uses supported format."));
 
         return new FileInspectionResult
         {
             Encoding = encoding,
             InputType = inputType.Value,
             SegmentCount = CountSegments(fileBytes, encoding, delimiters),
-            RawDocument = BuildRawFilePreview(fileBytes, encoding),
+            RawDocument = BuildRawFilePreview(fileBytes, encoding, delimiters),
             Delimiters = delimiters,
             Version = version,
         };
@@ -62,8 +62,9 @@ public class FileInspectionService : IFileInspectionService
 
     private static InputType? DetermineInputType(byte[] fileBytes)
     {
-        var head = Encoding.ASCII.GetString(
-            fileBytes[..Math.Min(fileBytes.Length, 300)]);
+        var head = Encoding.Latin1.GetString(
+            fileBytes[..Math.Min(fileBytes.Length, 300)])
+            .TrimStart('\uFEFF', ' ', '\r', '\n', '\t');
 
         if (head.StartsWith("ISA"))
             return InputType.X12;
@@ -75,23 +76,34 @@ public class FileInspectionService : IFileInspectionService
         return null;
     }
 
-    private static string BuildRawFilePreview(byte[] fileBytes, Encoding encoding)
+    private static string BuildRawFilePreview(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
     {
         var sb = new StringBuilder();
         var text = encoding.GetString(fileBytes);
 
-        var lines = text.Split('\n');
+        int lineNumer = 1;
+        var lines = text.Split(delimiters.SegmentTerminator);
+
         for (int i = 0; i < lines.Length; i++)
         {
-            sb.AppendLine($"{i + 1:000}: {lines[i].TrimEnd('\r')}");
+            if (!string.IsNullOrWhiteSpace(lines[i]))
+            {
+                sb.Append($"{lineNumer:000}: ")
+                  .Append(lines[i].Trim())
+                  .Append(delimiters.SegmentTerminator)
+                  .AppendLine();
+
+                lineNumer++;
+            }
         }
 
         return sb.ToString();
+
     }
 
     private static int CountSegments(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
     {
-        var text = encoding.GetString(fileBytes);
-        return text.Split(delimiters.SegmentTerminator).Length;
+        var sep = (byte)delimiters.SegmentTerminator;
+        return fileBytes.Count(b => b == sep);
     }
 }

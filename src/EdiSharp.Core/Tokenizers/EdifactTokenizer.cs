@@ -11,7 +11,6 @@ public class EdifactTokenizer : IEdiTokenizer
 
     public List<EdiSegment> Tokenize(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
     {
-
         var text = encoding.GetString(fileBytes);
         var rawSegments = text.Split(delimiters.SegmentTerminator);
 

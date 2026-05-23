@@ -11,7 +11,9 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
 
     public EdifactDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding)
     {
-        var textSpan = encoding.GetString(fileBytes).AsSpan();
+        var textSpan = encoding
+            .GetString(fileBytes)
+            .AsSpan();
 
         var unaIndex = textSpan.IndexOf("UNA", StringComparison.Ordinal);
 

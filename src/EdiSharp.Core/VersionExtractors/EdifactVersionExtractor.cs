@@ -17,13 +17,13 @@ public class EdifactVersionExtractor : IEdiVersionExtractor
             return null;
 
         var endIndex = text.IndexOf(delimiters.SegmentTerminator, startIndex);
-        if(endIndex == -1)
+        if (endIndex == -1)
             return null;
 
         var segment = text.Substring(startIndex, endIndex - startIndex);
 
         var parts = segment.Split(delimiters.ElementSeparator);
-        if(parts.Length < 3)
+        if (parts.Length < 3)
             return null;
 
         var messageIdParts = parts[2].Split(delimiters.ComponentSeparator);
@@ -32,4 +32,5 @@ public class EdifactVersionExtractor : IEdiVersionExtractor
 
         return $"{messageIdParts[0]} {messageIdParts[1]}.{messageIdParts[2]}";
     }
+
 }
