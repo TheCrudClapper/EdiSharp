@@ -435,18 +435,28 @@
 					Padding="12"
 					IsVisible="{Binding IsErrorVisible}">
 
-				<StackPanel Orientation="Horizontal"
-							Spacing="2">
+				<Grid ColumnDefinitions="*, 30">
+					<StackPanel Orientation="Horizontal"
+								VerticalAlignment="Center"
+								Grid.Column="0"
+								Spacing="2">
 
-					<TextBlock Text="ERROR:"
-							   Foreground="DarkRed"
-							   FontWeight="Bold"/>
+						<TextBlock Text="ERROR:"
+								   Foreground="DarkRed"
+								   FontWeight="Bold"/>
 
-					<TextBlock Text="{Binding Error}"
-							   Foreground="DarkRed"
-							   TextWrapping="Wrap"/>
+						<TextBlock Text="{Binding Error}"
+								   Foreground="DarkRed"
+								   TextWrapping="Wrap"/>
 
-				</StackPanel>
+					</StackPanel>
+					<Button Foreground="DarkRed"
+							VerticalAlignment="Center"
+							Command="{Binding DeleteErrorCommand}"
+							Grid.Column="1"
+							Content="X"/>
+				</Grid>
+
 
 			</Border>
 

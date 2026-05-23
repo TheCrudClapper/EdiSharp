@@ -118,6 +118,7 @@ public partial class MainWindowViewModel(
         if (result.IsFailure)
         {
             Error = result.Error.Description;
+            PushMessage(Error, true);
             return;
         }
 
@@ -183,6 +184,12 @@ public partial class MainWindowViewModel(
     public void FlushMessages() 
     {
         StatusMessages.Clear();
+    }
+
+    [RelayCommand]
+    public void DeleteError()
+    {
+        Error = null;
     }
 }
 
