@@ -1,8 +1,9 @@
 ﻿using EdiSharp.Core.DTO;
+using EdiSharp.Domain.ResultTypes;
 
 namespace EdiSharp.Core.ServiceContracts;
 
 public interface IEdiProcessingService
 {
-    Task ProcessAsync(EdiParseRequest request);
+    Task<Result> ProcessAsync(EdiParseRequest request);
 }

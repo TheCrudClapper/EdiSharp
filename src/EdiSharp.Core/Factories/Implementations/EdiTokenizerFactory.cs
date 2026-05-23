@@ -12,8 +12,11 @@ public class EdiTokenizerFactory : IEdiTokenizerFactory
         _map = tokenizers.ToDictionary(t => t.InputType);
     }
 
-    public IEdiTokenizer Create(InputType inputType)
+    public IEdiTokenizer? TryCreate(InputType inputType)
     {
-        return _map[inputType];
+        if (_map.TryGetValue(inputType, out var tokenizer))
+            return tokenizer;
+
+        return null;
     }
 }
