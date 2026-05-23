@@ -11,23 +11,33 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
 
     public EdifactDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding)
     {
-        var text = encoding.GetString(fileBytes);
+        var textSpan = encoding.GetString(fileBytes).AsSpan();
 
-        var firstLine = text.Length >= 9 ? text[..9] : text;
+        var unaIndex = textSpan.IndexOf("UNA", StringComparison.Ordinal);
 
-        if (firstLine.StartsWith("UNA"))
+        if(unaIndex != -1) 
         {
-            return new EdifactDelimiters()
+            var isLineStart = 
+                unaIndex == 0 
+                || textSpan[unaIndex - 1] == '\n' 
+                || textSpan[unaIndex - 1] == '\r';
+
+            if (isLineStart && textSpan.Length >= unaIndex + 9)
             {
-                ComponentSeparator = firstLine[3],
-                ElementSeparator = firstLine[4],
-                DecimalSeparator = firstLine[5],
-                ReleaseCharacter = firstLine[6],
-                RepetitionSeparator = firstLine[7],
-                SegmentTerminator = firstLine[8]
-            };
+                var una = textSpan.Slice(unaIndex, 9);
+
+                return new EdifactDelimiters
+                {
+                    ComponentSeparator = una[3],
+                    ElementSeparator = una[4],
+                    DecimalSeparator = una[5],
+                    ReleaseCharacter = una[6],
+                    RepetitionSeparator = una[7],
+                    SegmentTerminator = una[8]
+                };
+            }
         }
 
-        return new EdifactDelimiters();
+        return EdifactDelimiters.DefaultEdifact();
     }
 }

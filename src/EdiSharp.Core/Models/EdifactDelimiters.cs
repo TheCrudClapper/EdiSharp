@@ -11,19 +11,32 @@ public class EdifactDelimiters
 {
 
     //Separates components 
-    public char ComponentSeparator { get; set; } = ':';
+    public char ComponentSeparator { get; set; }
 
     //Separates data elements in segment
-    public char ElementSeparator { get; init; } = '+';
+    public char ElementSeparator { get; init; }
 
     //Ends whole segment
-    public char SegmentTerminator { get; init; } = '\'';
+    public char SegmentTerminator { get; init; }
 
     //Makes next delimiter being treated as normal character not delimiters
-    public char ReleaseCharacter { get; init; } = '?';
+    public char ReleaseCharacter { get; init; }
 
-    public char RepetitionSeparator { get; init; } = '*';
+    public char RepetitionSeparator { get; init; }
 
     //Specifies which separator is used for decimal places
-    public char DecimalSeparator { get; init; } = '.';
+    public char DecimalSeparator { get; init; }
+
+    public static EdifactDelimiters DefaultEdifact() 
+    {
+        return new EdifactDelimiters
+        {
+            ComponentSeparator = ':',
+            ElementSeparator = '+',
+            DecimalSeparator = '.',
+            ReleaseCharacter = '?',
+            RepetitionSeparator = '*',
+            SegmentTerminator = '\''
+        };
+    }
 }
