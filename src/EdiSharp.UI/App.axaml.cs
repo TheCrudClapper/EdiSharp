@@ -29,7 +29,7 @@ namespace EdiSharp.UI
         public override void OnFrameworkInitializationCompleted()
         {
             var services = new ServiceCollection();
-
+            
             services.AddSingleton<IEdiProcessingService, EdiProcessingService>();
             services.AddSingleton<IEdiTokenizerFactory, EdiTokenizerFactory>();
             services.AddSingleton<IEdiTokenizer, EdifactTokenizer>();
@@ -42,6 +42,8 @@ namespace EdiSharp.UI
             services.AddSingleton<IEdiDelimiterDetectorFactory, EdiDelimiterDetectorFactory>();
             services.AddSingleton<IEdiVersionExtractor, EdifactVersionExtractor>();
             services.AddSingleton<IEdiVersionExtractorFactory, EdiVersionExtractorFactory>();
+            services.AddSingleton<IDocumentPreviewerService, EdifactDocumentPreviewerService>();
+            services.AddSingleton<IDocumentPreviewerServiceFactory, DocumentPreviewerServiceFactory>();
 
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>
@@ -59,7 +61,7 @@ namespace EdiSharp.UI
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>(), provider.GetRequiredService<IEdiProcessingService>(), provider.GetRequiredService<IFileInspectionService>()),
+                    DataContext = new MainWindowViewModel(provider.GetRequiredService<Func<TopLevel?>>(), provider.GetRequiredService<IEdiProcessingService>(), provider.GetRequiredService<IFileInspectionService>(), provider.GetRequiredService<IDocumentPreviewerServiceFactory>()),
                 };
             }
 

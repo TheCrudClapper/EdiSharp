@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
+using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.ServiceContracts;
 using EdiSharp.UI.Helpers;
 using System;
@@ -16,7 +17,8 @@ namespace EdiSharp.UI.ViewModels;
 public partial class MainWindowViewModel(
     Func<TopLevel?> topLevelAccessor,
     IEdiProcessingService service,
-    IFileInspectionService fileInspectionService)
+    IFileInspectionService fileInspectionService,
+    IDocumentPreviewerServiceFactory documentPrevServFact)
     : ViewModelBase
 {
 
@@ -65,7 +67,6 @@ public partial class MainWindowViewModel(
     //Selected file bytes
     private byte[]? _fileBytes;
     private FileInspectionResult? FileInspectionResult { get; set; }
-
     #endregion
 
     partial void OnErrorChanged(string? value)
@@ -123,13 +124,24 @@ public partial class MainWindowViewModel(
         }
 
         FileInspectionResult = result.Value;
-        RawDocument = result.Value.RawDocument;
         FileName = file.Name;
         SegmentCount = result.Value.SegmentCount;
         EncodingName = result.Value.Encoding.EncodingName;
         EdiVersion = result.Value.Version;
         Error = null;
         InputTypeText = InputTypeToStringConverter.ToStringInputType(result.Value.InputType);
+
+        var documentPreviewerService = documentPrevServFact.TryCreate(result.Value.InputType);
+
+        if (documentPreviewerService is null) 
+        {
+            Error = "Failed to create preview of currently selected file.";
+            PushMessage(Error, true);
+            RawDocument = "Failed to create preview.";
+            return;
+        }
+
+        RawDocument = documentPreviewerService.GetRawDocumentPreview(_fileBytes, result.Value.Encoding, result.Value.Delimiters);
     }
 
     [RelayCommand]

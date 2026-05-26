@@ -54,7 +54,6 @@ public class FileInspectionService : IFileInspectionService
             Encoding = encoding,
             InputType = inputType.Value,
             SegmentCount = CountSegments(fileBytes, encoding, delimiters),
-            RawDocument = BuildRawFilePreview(fileBytes, encoding, delimiters),
             Delimiters = delimiters,
             Version = version,
         };
@@ -74,31 +73,6 @@ public class FileInspectionService : IFileInspectionService
             return InputType.EDIFACT;
 
         return null;
-    }
-
-    private static string BuildRawFilePreview(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
-    {
-        var sb = new StringBuilder();
-        var text = encoding.GetString(fileBytes);
-
-        int lineNumer = 1;
-        var lines = text.Split(delimiters.SegmentTerminator);
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            if (!string.IsNullOrWhiteSpace(lines[i]))
-            {
-                sb.Append($"{lineNumer:000}: ")
-                  .Append(lines[i].Trim())
-                  .Append(delimiters.SegmentTerminator)
-                  .AppendLine();
-
-                lineNumer++;
-            }
-        }
-
-        return sb.ToString();
-
     }
 
     private static int CountSegments(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)

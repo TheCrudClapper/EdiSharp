@@ -6,7 +6,6 @@ namespace EdiSharp.Core.DTO;
 
 public record FileInspectionResult
 {
-    public string RawDocument { get; init; } = null!;
     public int SegmentCount { get; init; }
     public Encoding Encoding { get; init; } = null!;
     public string Version { get; init; } = null!;
