@@ -1,5 +1,6 @@
 ﻿using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
+using EdiSharp.Core.Exceptions;
 using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.Models;
 using EdiSharp.Core.ServiceContracts;
@@ -30,21 +31,18 @@ public class FileInspectionService : IFileInspectionService
         if (inputType is null)
             return Result.Failure<FileInspectionResult>(Error.Create("File is not recognized as EDIFACT or X12. Expected ISA or UNB/UNA header."));
 
-        var encodingDetector = _detectorFactory.TryCreate(inputType.Value);
-        if (encodingDetector is null)
-            return Result.Failure<FileInspectionResult>(Error.Create("Failed to detect file encoding. The file may contain unsupported or corrupted byte sequences."));
+        var encodingDetector = _detectorFactory.TryCreate(inputType.Value) 
+            ?? throw new EdiInstantiationException($"No encoding detector for {inputType.Value} type");
 
         Encoding encoding = encodingDetector.DetermineEncoding(fileBytes);
 
-        var delimiterDetector = _delimiterFactory.TryCreate(inputType.Value);
-        if (delimiterDetector is null)
-            return Result.Failure<FileInspectionResult>(Error.Create("EDI delimiters could not be determined. Check if file uses standard EDIFACT or X12 syntax."));
+        var delimiterDetector = _delimiterFactory.TryCreate(inputType.Value) 
+            ?? throw new EdiInstantiationException($"No delimiter detector for {inputType.Value} type");
 
         var delimiters = delimiterDetector.DetectDelimiters(fileBytes, encoding);
 
-        var versionExtractor = _extractorFactory.TryCreate(inputType.Value);
-        if (versionExtractor is null)
-            return Result.Failure<FileInspectionResult>(Error.Create("Unable to extract message version from UNH segment. File may be malformed or non-EDIFACT."));
+        var versionExtractor = _extractorFactory.TryCreate(inputType.Value)
+            ?? throw new EdiInstantiationException($"No version extractor for {inputType.Value} type");
 
         var version = versionExtractor.Extract(fileBytes, encoding, delimiters);
         if (version is null)

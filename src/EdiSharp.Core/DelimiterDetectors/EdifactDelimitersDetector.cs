@@ -11,11 +11,9 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
 
     public EdiDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding)
     {
-        var textSpan = encoding
-            .GetString(fileBytes)
-            .AsSpan();
+        ReadOnlySpan<byte> textSpan = fileBytes.AsSpan();
 
-        var unaIndex = textSpan.IndexOf("UNA", StringComparison.Ordinal);
+        var unaIndex = textSpan.IndexOf("UNA"u8);
 
         if(unaIndex != -1) 
         {
@@ -30,12 +28,12 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
 
                 return new EdiDelimiters
                 {
-                    ComponentSeparator = una[3],
-                    ElementSeparator = una[4],
-                    DecimalSeparator = una[5],
-                    ReleaseCharacter = una[6],
-                    RepetitionSeparator = una[7],
-                    SegmentTerminator = una[8]
+                    ComponentSeparator = (char)una[3],
+                    ElementSeparator = (char)una[4],
+                    DecimalSeparator = (char)una[5],
+                    ReleaseCharacter = (char)una[6],
+                    RepetitionSeparator = (char)una[7],
+                    SegmentTerminator = (char)una[8]
                 };
             }
         }

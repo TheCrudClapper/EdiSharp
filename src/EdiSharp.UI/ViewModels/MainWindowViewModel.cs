@@ -124,6 +124,8 @@ public partial class MainWindowViewModel(
         catch (Exception ex) 
         {
             Error = ex.Message;
+            PushMessage(Error, true);
+            return;
         }
   
         if (result != null && result.IsFailure)
@@ -176,7 +178,17 @@ public partial class MainWindowViewModel(
                 OutputType = outputType.GetValueOrDefault()
             });
 
-        await service.ProcessAsync(request);
+        try
+        {
+            await service.ProcessAsync(request);
+        }
+        catch(Exception ex) 
+        {
+            Error = ex.Message;
+            PushMessage(Error, true);
+            return;
+        }
+        
     }
 
     [RelayCommand]

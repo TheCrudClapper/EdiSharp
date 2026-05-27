@@ -3,11 +3,11 @@ using EdiSharp.Core.Models;
 using EdiSharp.Core.ServiceContracts;
 using System.Text;
 
-namespace EdiSharp.Core.Services;
+namespace EdiSharp.Core.Services.X12;
 
-public class EdifactDocumentPreviewerService : IDocumentPreviewerService
+public class X12DocumentPreviewerService : IDocumentPreviewerService
 {
-    public InputType InputType => InputType.EDIFACT;
+    public InputType InputType => InputType.X12;
 
     public string GetRawDocumentPreview(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {

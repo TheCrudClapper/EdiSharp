@@ -26,21 +26,21 @@ public class EdifactTokenizer : IEdiTokenizer
             if (segment.StartsWith("UNA"))
                 continue;
 
-            var firstSeparatorIndex = segment.IndexOf(delimiters.ElementSeparator);
+            var firstElemSeparatorIdx = segment.IndexOf(delimiters.ElementSeparator);
 
             string tag;
             string[] elementsRaw;
 
-            if (firstSeparatorIndex < 0)
+            if (firstElemSeparatorIdx < 0)
             {
                 tag = segment;
                 elementsRaw = [];
             }
             else
             {
-                tag = segment[..firstSeparatorIndex];
+                tag = segment[..firstElemSeparatorIdx];
 
-                elementsRaw = segment[(firstSeparatorIndex + 1)..]
+                elementsRaw = segment[(firstElemSeparatorIdx + 1)..]
                     .Split(delimiters.ElementSeparator);
             }
 

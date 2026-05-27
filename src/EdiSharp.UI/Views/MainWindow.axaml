@@ -248,7 +248,7 @@
 														   Foreground="DarkRed"
 														   VerticalAlignment="Top">
 													<Run Text="{Binding Message}"/>
-													<Run Text=" at "/>
+													<Run Text="At "/>
 													<Run Text="{Binding TimeStamp}" FontStyle="Oblique"/>
 												</TextBlock>
 											</Grid>
