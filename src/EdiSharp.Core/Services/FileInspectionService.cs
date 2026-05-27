@@ -4,6 +4,7 @@ using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.Models;
 using EdiSharp.Core.ServiceContracts;
 using EdiSharp.Domain.ResultTypes;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 
 namespace EdiSharp.Core.Services;
@@ -59,18 +60,36 @@ public class FileInspectionService : IFileInspectionService
         };
     }
 
-    //change to byte type compariosn
     private static InputType? DetermineInputType(byte[] fileBytes)
     {
-        var head = Encoding.Latin1.GetString(
-            fileBytes[..Math.Min(fileBytes.Length, 300)])
-            .TrimStart('\uFEFF', ' ', '\r', '\n', '\t');
+        ReadOnlySpan<byte> data = fileBytes;
+        if (data.Length >= 3 &&
+            data[0] == 0xEF &&
+            data[1] == 0xBB &&
+            data[2] == 0xBF)
+        {
+            data = data.Slice(3);
+        }
 
-        if (head.StartsWith("ISA"))
+        int i  = 0;
+
+        while(i < data.Length) 
+        {
+            byte b = data[i];
+
+            if (b != ' ' && b != '\r' && b != '\n' && b != '\t')
+                break;
+
+            i++;
+        }
+
+        data = data.Slice(i);
+
+        if (data.Length >= 3 && data[0] == 'I' && data[1] == 'S' && data[2] == 'A')
             return InputType.X12;
 
-        if (head.StartsWith("UNA") ||
-            head.StartsWith("UNB"))
+        if (data.Length >= 3 && (data[0] == 'U' && data[1] == 'N' && data[2] == 'A') ||
+            (data[0] == 'U' && data[1] == 'N' && data[2] == 'B'))
             return InputType.EDIFACT;
 
         return null;

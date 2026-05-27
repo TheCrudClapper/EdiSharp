@@ -10,19 +10,17 @@ public class EdifactEncodingDetector : IEdiEncodingDetector
 
     public Encoding DetermineEncoding(byte[] fileBytes)
     {
-        var head = Encoding.Latin1.GetString(
-            fileBytes.AsSpan(0, Math.Min(fileBytes.Length, 200))
-        ).AsSpan();
-
-        var idx = head.IndexOf("UNB", StringComparison.Ordinal);
-        if (idx < 0)
+        ReadOnlySpan<byte> span = fileBytes;
+        int unbIdx = span.IndexOf("UNB"u8);
+        if (unbIdx == -1)
             return Encoding.UTF8;
 
-        var segment = head[idx..];
+        var slice = span.Slice(unbIdx, Math.Min(200, span.Length - unbIdx));
 
-        if (segment.Contains("UNOC", StringComparison.Ordinal))
+        if (slice.IndexOf("UNOC"u8) >= 0)
             return Encoding.GetEncoding("ISO-8859-1");
-        if (segment.Contains("UNOA", StringComparison.Ordinal))
+
+        if (slice.IndexOf("UNOA"u8) >= 0)
             return Encoding.ASCII;
 
         return Encoding.UTF8;
