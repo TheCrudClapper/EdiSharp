@@ -6,5 +6,5 @@ namespace EdiSharp.Core.ServiceContracts;
 public interface IDocumentPreviewerService
 {
     InputType InputType { get; }
-    string GetRawDocumentPreview(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters);
+    string GetRawDocumentPreview(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters);
 }

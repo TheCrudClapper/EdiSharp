@@ -9,7 +9,7 @@ public class EdifactVersionExtractor : IEdiVersionExtractor
 {
     public InputType InputType => InputType.EDIFACT;
 
-    public string? Extract(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
+    public string? Extract(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {
         var text = encoding.GetString(fileBytes);
         var startIndex = text.IndexOf("UNH+");

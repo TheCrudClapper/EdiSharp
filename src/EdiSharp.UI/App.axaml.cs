@@ -44,6 +44,8 @@ namespace EdiSharp.UI
             services.AddSingleton<IEdiVersionExtractorFactory, EdiVersionExtractorFactory>();
             services.AddSingleton<IDocumentPreviewerService, EdifactDocumentPreviewerService>();
             services.AddSingleton<IDocumentPreviewerServiceFactory, DocumentPreviewerServiceFactory>();
+            services.AddSingleton<IDocumentPreviewerService, X12DocumentPreviewerService>();
+            services.AddSingleton<IEdiDelimiterDetector, X12DelimiterDetector>();
 
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>

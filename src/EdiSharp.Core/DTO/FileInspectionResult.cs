@@ -10,5 +10,5 @@ public record FileInspectionResult
     public Encoding Encoding { get; init; } = null!;
     public string Version { get; init; } = null!;
     public InputType InputType { get; init; }
-    public EdifactDelimiters Delimiters { get; init; } = null!;
+    public EdiDelimiters Delimiters { get; init; } = null!;
 }

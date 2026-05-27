@@ -9,7 +9,7 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
 {
     public InputType InputType => InputType.EDIFACT;
 
-    public EdifactDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding)
+    public EdiDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding)
     {
         var textSpan = encoding
             .GetString(fileBytes)
@@ -28,7 +28,7 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
             {
                 var una = textSpan.Slice(unaIndex, 9);
 
-                return new EdifactDelimiters
+                return new EdiDelimiters
                 {
                     ComponentSeparator = una[3],
                     ElementSeparator = una[4],
@@ -40,6 +40,6 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
             }
         }
 
-        return EdifactDelimiters.DefaultEdifact();
+        return EdiDelimiters.DefaultEdifact();
     }
 }

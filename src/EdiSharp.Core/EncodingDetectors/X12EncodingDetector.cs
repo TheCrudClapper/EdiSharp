@@ -10,6 +10,15 @@ public class X12EncodingDetector : IEdiEncodingDetector
 
     public Encoding DetermineEncoding(byte[] fileBytes)
     {
-        throw new NotImplementedException();
+        if (fileBytes.StartsWith(new byte[] { 0xEF, 0xBB, 0xBF }))
+            return Encoding.UTF8;
+
+        if (fileBytes.StartsWith(new byte[] { 0xFF, 0xFE }))
+            return Encoding.Unicode;
+
+        if (fileBytes.StartsWith(new byte[] { 0xFE, 0xFF }))
+            return Encoding.BigEndianUnicode;
+
+        return Encoding.Latin1;
     }
 }

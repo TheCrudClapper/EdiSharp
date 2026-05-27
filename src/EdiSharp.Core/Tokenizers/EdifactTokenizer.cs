@@ -9,7 +9,7 @@ public class EdifactTokenizer : IEdiTokenizer
 {
     public InputType InputType => InputType.EDIFACT;
 
-    public List<EdiSegment> Tokenize(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
+    public List<EdiSegment> Tokenize(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {
         var text = encoding.GetString(fileBytes);
         var rawSegments = text.Split(delimiters.SegmentTerminator);

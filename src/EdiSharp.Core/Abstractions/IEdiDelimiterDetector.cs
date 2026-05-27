@@ -7,5 +7,5 @@ namespace EdiSharp.Core.Abstractions;
 public interface IEdiDelimiterDetector
 {
     InputType InputType { get; }
-    EdifactDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding);
+    EdiDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding);
 }

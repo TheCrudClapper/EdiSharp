@@ -7,5 +7,5 @@ namespace EdiSharp.Core.Abstractions;
 public interface IEdiVersionExtractor
 {
     InputType InputType { get; }
-    string? Extract(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters);
+    string? Extract(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters);
 }

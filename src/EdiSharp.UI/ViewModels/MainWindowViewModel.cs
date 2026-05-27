@@ -6,6 +6,7 @@ using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
 using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.ServiceContracts;
+using EdiSharp.Domain.ResultTypes;
 using EdiSharp.UI.Helpers;
 using System;
 using System.Collections.ObjectModel;
@@ -114,9 +115,18 @@ public partial class MainWindowViewModel(
             return;
         }
 
-        var result = fileInspectionService.Inspect(_fileBytes);
+        Result<FileInspectionResult>? result = null;
 
-        if (result.IsFailure)
+        try
+        {
+            result = fileInspectionService.Inspect(_fileBytes);
+        }
+        catch (Exception ex) 
+        {
+            Error = ex.Message;
+        }
+  
+        if (result != null && result.IsFailure)
         {
             Error = result.Error.Description;
             PushMessage(Error, true);

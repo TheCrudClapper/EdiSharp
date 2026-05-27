@@ -59,6 +59,7 @@ public class FileInspectionService : IFileInspectionService
         };
     }
 
+    //change to byte type compariosn
     private static InputType? DetermineInputType(byte[] fileBytes)
     {
         var head = Encoding.Latin1.GetString(
@@ -75,7 +76,7 @@ public class FileInspectionService : IFileInspectionService
         return null;
     }
 
-    private static int CountSegments(byte[] fileBytes, Encoding encoding, EdifactDelimiters delimiters)
+    private static int CountSegments(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {
         var sep = (byte)delimiters.SegmentTerminator;
         return fileBytes.Count(b => b == sep);
