@@ -4,8 +4,8 @@ using EdiSharp.Core.Exceptions;
 using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.Models;
 using EdiSharp.Core.ServiceContracts;
+using EdiSharp.Domain.Errors;
 using EdiSharp.Domain.ResultTypes;
-using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 
 namespace EdiSharp.Core.Services;
@@ -29,7 +29,7 @@ public class FileInspectionService : IFileInspectionService
         var inputType = DetermineInputType(fileBytes);
 
         if (inputType is null)
-            return Result.Failure<FileInspectionResult>(Error.Create("File is not recognized as EDIFACT or X12. Expected ISA or UNB/UNA header."));
+            return Result.Failure<FileInspectionResult>(FileInspectionErrors.FileNotRecognized);
 
         var encodingDetector = _detectorFactory.TryCreate(inputType.Value) 
             ?? throw new EdiInstantiationException($"No encoding detector for {inputType.Value} type");
@@ -46,7 +46,7 @@ public class FileInspectionService : IFileInspectionService
 
         var version = versionExtractor.Extract(fileBytes, encoding, delimiters);
         if (version is null)
-            return Result.Failure<FileInspectionResult>(Error.Create("Unable to detect EDI file version. Ensure file is not corrupted or uses supported format."));
+            return Result.Failure<FileInspectionResult>(FileInspectionErrors.UnableToDetectEdiVersion);
 
         return new FileInspectionResult
         {

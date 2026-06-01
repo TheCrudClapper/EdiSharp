@@ -19,7 +19,7 @@ public class EdiDelimiters
     public char SegmentTerminator { get; init; }
 
     //Makes next delimiter being treated as normal character not delimiters
-    public char ReleaseCharacter { get; init; }
+    public char EscapeCharacter { get; init; }
 
     public char? RepetitionSeparator { get; init; }
 
@@ -33,7 +33,7 @@ public class EdiDelimiters
             ComponentSeparator = ':',
             ElementSeparator = '+',
             DecimalSeparator = '.',
-            ReleaseCharacter = '?',
+            EscapeCharacter = '?',
             RepetitionSeparator = '*',
             SegmentTerminator = '\''
         };

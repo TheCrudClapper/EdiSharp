@@ -31,7 +31,7 @@ public class EdifactDelimitersDetector : IEdiDelimiterDetector
                     ComponentSeparator = (char)una[3],
                     ElementSeparator = (char)una[4],
                     DecimalSeparator = (char)una[5],
-                    ReleaseCharacter = (char)una[6],
+                    EscapeCharacter = (char)una[6],
                     RepetitionSeparator = (char)una[7],
                     SegmentTerminator = (char)una[8]
                 };

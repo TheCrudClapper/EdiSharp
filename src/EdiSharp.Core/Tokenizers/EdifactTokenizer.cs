@@ -1,5 +1,6 @@
 ﻿using EdiSharp.Core.Abstractions;
 using EdiSharp.Core.Enums;
+using EdiSharp.Core.Lexer;
 using EdiSharp.Core.Models;
 using System.Text;
 
@@ -13,7 +14,6 @@ public class EdifactTokenizer : IEdiTokenizer
     {
         var text = encoding.GetString(fileBytes);
         var rawSegments = text.Split(delimiters.SegmentTerminator);
-
         var segments = new List<EdiSegment>();
 
         foreach (var raw in rawSegments)
@@ -28,27 +28,28 @@ public class EdifactTokenizer : IEdiTokenizer
 
             var firstElemSeparatorIdx = segment.IndexOf(delimiters.ElementSeparator);
 
-            string tag;
-            string[] elementsRaw;
+            string tag = string.Empty;
+            List<string> elementsSplit = [];
 
             if (firstElemSeparatorIdx < 0)
             {
                 tag = segment;
-                elementsRaw = [];
             }
             else
             {
                 tag = segment[..firstElemSeparatorIdx];
-
-                elementsRaw = segment[(firstElemSeparatorIdx + 1)..]
-                    .Split(delimiters.ElementSeparator);
+                elementsSplit = EdiFileSplitter.Split(segment[(firstElemSeparatorIdx + 1)..],
+                    delimiters.ElementSeparator,
+                    delimiters.EscapeCharacter);
             }
 
-            var elements = elementsRaw
+            var elements = elementsSplit
                 .Select(e => new EdiElement
                 {
                     Raw = e,
-                    Components = e.Split(delimiters.ComponentSeparator)
+                    Components = EdiFileSplitter.Split(e,
+                        delimiters.ComponentSeparator,
+                        delimiters.EscapeCharacter)
                 })
                 .ToList();
 
