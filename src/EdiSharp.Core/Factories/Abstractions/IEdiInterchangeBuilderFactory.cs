@@ -3,7 +3,7 @@ using EdiSharp.Core.Enums;
 
 namespace EdiSharp.Core.Factories.Abstractions;
 
-public interface IEdiMessageSplitterFactory
+public interface IEdiInterchangeBuilderFactory
 {
-    IEdiMessageSplitter? TryCreate(InputType inputType);
+    IEdiInterchangeBuilder? TryCreate(InputType inputType);
 }

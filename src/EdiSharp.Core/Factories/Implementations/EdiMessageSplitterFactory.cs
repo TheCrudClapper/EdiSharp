@@ -4,13 +4,13 @@ using EdiSharp.Core.Factories.Abstractions;
 
 namespace EdiSharp.Core.Factories.Implementations;
 
-public class EdiMessageSplitterFactory : IEdiMessageSplitterFactory
+public class EdiMessageSplitterFactory : IEdiInterchangeBuilderFactory
 {
-    private readonly Dictionary<InputType, IEdiMessageSplitter> _map;
-    public EdiMessageSplitterFactory(IEnumerable<IEdiMessageSplitter> splitters)
+    private readonly Dictionary<InputType, IEdiInterchangeBuilder> _map;
+    public EdiMessageSplitterFactory(IEnumerable<IEdiInterchangeBuilder> splitters)
         => _map = splitters.ToDictionary(s => s.InputType);
 
-    public IEdiMessageSplitter? TryCreate(InputType inputType)
+    public IEdiInterchangeBuilder? TryCreate(InputType inputType)
         => _map.TryGetValue(inputType, out var splitter) ? splitter : null;
     
 }

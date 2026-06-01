@@ -167,7 +167,7 @@ public partial class MainWindowViewModel(
         if (_fileBytes is null || outputType is null || FileInspectionResult is null)
             return;
 
-        var request = new EdiParseRequest(
+        var request = new EdiParseContext(
             _fileBytes,
             new ParseOptions()
             {

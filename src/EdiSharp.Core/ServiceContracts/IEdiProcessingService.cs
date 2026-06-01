@@ -5,5 +5,5 @@ namespace EdiSharp.Core.ServiceContracts;
 
 public interface IEdiProcessingService
 {
-    Task<Result> ProcessAsync(EdiParseRequest request);
+    Task<Result> ProcessAsync(EdiParseContext request);
 }

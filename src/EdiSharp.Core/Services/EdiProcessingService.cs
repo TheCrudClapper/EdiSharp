@@ -9,24 +9,24 @@ namespace EdiSharp.Core.Services;
 public class EdiProcessingService : IEdiProcessingService
 {
     private readonly IEdiTokenizerFactory _tokenizerFactory;
-    private readonly IEdiMessageSplitterFactory _splitterFactory;
-    public EdiProcessingService(IEdiTokenizerFactory tokenizerFactory, IEdiMessageSplitterFactory splitterFactory)
+    private readonly IEdiInterchangeBuilderFactory _interchangeBuilderFactory;
+    public EdiProcessingService(IEdiTokenizerFactory tokenizerFactory, IEdiInterchangeBuilderFactory splitterFactory)
     {
         _tokenizerFactory = tokenizerFactory;
-        _splitterFactory = splitterFactory;
+        _interchangeBuilderFactory = splitterFactory;
     }
 
-    public async Task<Result> ProcessAsync(EdiParseRequest request)
+    public async Task<Result> ProcessAsync(EdiParseContext context)
     {
-        var tokenizer = _tokenizerFactory.TryCreate(request.options.InputType)
-            ?? throw new EdiInstantiationException($"No tokenizer for {request.options.InputType} type");
+        var tokenizer = _tokenizerFactory.TryCreate(context.options.InputType)
+            ?? throw new EdiInstantiationException($"No tokenizer for {context.options.InputType} type");
 
-        var tokenizedEdi = tokenizer.Tokenize(request.fileBytes, request.options.Encoding, request.options.Delimiters);
+        var tokenizedEdi = tokenizer.Tokenize(context.fileBytes, context.options.Encoding, context.options.Delimiters);
 
-        var messageSplitter = _splitterFactory.TryCreate(request.options.InputType)
-            ?? throw new EdiInstantiationException($"No message splitter for {request.options.InputType} type");
+        var interchangeBuilder = _interchangeBuilderFactory.TryCreate(context.options.InputType)
+            ?? throw new EdiInstantiationException($"No intechange builder for {context.options.InputType} type");
 
-        var splittedEdi = messageSplitter.Split(tokenizedEdi, request.options.Encoding);
+        var splittedEdi = interchangeBuilder.Build(tokenizedEdi, context.options.Encoding);
 
         throw new NotImplementedException();
     }

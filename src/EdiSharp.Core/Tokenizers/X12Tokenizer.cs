@@ -12,44 +12,50 @@ public class X12Tokenizer : IEdiTokenizer
     public List<EdiSegment> Tokenize(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {
         var text = encoding.GetString(fileBytes);
-        var lines = text.Split(delimiters.SegmentTerminator);
+        var rawSegments = text.Split(delimiters.SegmentTerminator);
+        var segments = new List<EdiSegment>();
 
-        List<EdiSegment> segments = new();
-        foreach (var line in lines) 
+        foreach (var raw in rawSegments)
         {
-            var segment = line.Trim();
+            var segment = raw.Trim();
 
             if (string.IsNullOrWhiteSpace(segment))
                 continue;
 
+            if (segment.StartsWith("UNA"))
+                continue;
+
             var firstElemSeparatorIdx = segment.IndexOf(delimiters.ElementSeparator);
 
-            string tag;
-            string[] elementsRaw;
+            string tag = string.Empty;
+            List<string> elementsSplit = [];
 
-            if(firstElemSeparatorIdx < 0) 
+            if (firstElemSeparatorIdx < 0)
             {
                 tag = segment;
-                elementsRaw = [];
             }
-            else 
+            else
             {
                 tag = segment[..firstElemSeparatorIdx];
-                elementsRaw = segment[(firstElemSeparatorIdx + 1)..]
-                    .Split(delimiters.ElementSeparator);
+                elementsSplit = DelimitedEscapedSplitter.Split(segment[(firstElemSeparatorIdx + 1)..],
+                    delimiters.ElementSeparator,
+                    delimiters.EscapeCharacter);
             }
 
-            var elements = elementsRaw.Select(e => new EdiElement
-            {
-                Raw = e,
-                Components = e.Split(delimiters.ComponentSeparator)
-            })
-            .ToList();
+            var elements = elementsSplit
+                .Select(e => new EdiElement
+                {
+                    Raw = e,
+                    Components = DelimitedEscapedSplitter.Split(e,
+                        delimiters.ComponentSeparator,
+                        delimiters.EscapeCharacter)
+                })
+                .ToList();
 
             segments.Add(new EdiSegment
             {
                 Elements = elements,
-                Tag = tag,
+                Tag = tag
             });
         }
 

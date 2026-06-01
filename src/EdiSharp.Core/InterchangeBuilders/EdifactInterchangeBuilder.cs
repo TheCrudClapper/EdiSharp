@@ -5,11 +5,11 @@ using System.Text;
 
 namespace EdiSharp.Core.MessageSplitters;
 
-public class X12MessageSplitter : IEdiMessageSplitter
+public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
 {
-    public InputType InputType => InputType.X12;
+    public InputType InputType => InputType.EDIFACT;
 
-    public EdiInterchange Split(List<EdiSegment> segments, Encoding encoding)
+    public EdiInterchange Build(List<EdiSegment> segments, Encoding encoding)
     {
         throw new NotImplementedException();
     }

@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace EdiSharp.Core.Lexer;
+namespace EdiSharp.Core.Tokenizers;
 
-public static class EdiFileSplitter
+public static class DelimitedEscapedSplitter
 {
     public static List<string> Split(string raw, char separator, char escape)
     {

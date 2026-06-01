@@ -47,7 +47,7 @@ namespace EdiSharp.UI
             services.AddSingleton<IEdiVersionExtractorFactory, EdiVersionExtractorFactory>();
             services.AddSingleton<IDocumentPreviewerServiceFactory, DocumentPreviewerServiceFactory>();
             services.AddSingleton<IEdiEncodingDetectorFactory, EdiEncodingDetectorFactory>();
-            services.AddSingleton<IEdiMessageSplitterFactory, EdiMessageSplitterFactory>();
+            services.AddSingleton<IEdiInterchangeBuilderFactory, EdiMessageSplitterFactory>();
 
             //Services
             services.AddSingleton<IFileInspectionService, FileInspectionService>();
@@ -60,8 +60,8 @@ namespace EdiSharp.UI
             services.AddSingleton<IEdiTokenizer, X12Tokenizer>();
 
             //Message Splitters
-            services.AddSingleton<IEdiMessageSplitter, EdifactMessageSplitter>();
-            services.AddSingleton<IEdiMessageSplitter, X12MessageSplitter>();
+            services.AddSingleton<IEdiInterchangeBuilder, EdifactInterchangeBuilder>();
+            services.AddSingleton<IEdiInterchangeBuilder, X12InterchangeBuilder>();
             
             //Top level
             services.AddSingleton<Func<TopLevel?>>(x => () =>
