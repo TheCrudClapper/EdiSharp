@@ -6,6 +6,10 @@ using System.Globalization;
 
 namespace EdiSharp.Core.MessageSplitters;
 
+// TO DO:
+// Add States for Builder: WaitingForUNB, InsideMessage, InsideInterchange, Completed
+// Add Support for Functional Groups, then support for message reference num validation if many messages
+// Unit Testing 
 public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
 {
     public EdiStandard InputType => EdiStandard.EDIFACT;
@@ -45,10 +49,14 @@ public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
             }
         }
 
+        //When interchange concluded before message was saved by UNT
+        if (ctx.MessageHeader is not null)
+            throw new EdiSemanticsException("Message was not closed by UNT");
+
         return new EdiInterchange
         {
-            Header = ctx.InterchangeHeader ?? throw new EdiSemanticsException("Missing UNB"),
-            Trailer = ctx.InterchangeTrailer ?? throw new EdiSemanticsException("Missing UNZ"),
+            Header = ctx.InterchangeHeader ?? throw new EdiSemanticsException("Missing UNB."),
+            Trailer = ctx.InterchangeTrailer ?? throw new EdiSemanticsException("Missing UNZ."),
             Messages = ctx.Messages,
             Standard = EdiStandard.EDIFACT
         };
@@ -56,6 +64,9 @@ public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
 
     private static void HandleUNB(EdiSegment seg, BuildContext ctx)
     {
+        if (ctx.InterchangeHeader is not null)
+            throw new EdiSemanticsException("Interchange already opened.");
+
         var date = seg.Elements[3].Components[0];
         var time = seg.Elements[3].Components[1];
 
@@ -70,6 +81,12 @@ public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
 
     private static void HandleUNH(EdiSegment seg, BuildContext ctx)
     {
+        if (ctx.InterchangeHeader is null)
+            throw new EdiSemanticsException("Cannot build message without interchange.");
+
+        if (ctx.MessageHeader is not null)
+            throw new EdiSemanticsException("Message already opened.");
+
         var identifier = seg.Elements[1];
 
         ctx.MessageHeader = new MessageHeader()
@@ -86,14 +103,23 @@ public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
     private static void HandleUNT(EdiSegment seg, BuildContext ctx)
     {
         if (ctx.MessageHeader is null)
-            throw new EdiSemanticsException("UNT without UNH");
+            throw new EdiSemanticsException("UNT without UNH.");
+
+        if (ctx.MessageTrailer is not null)
+            throw new EdiSemanticsException("UNT already defined.");
 
         ctx.MessageTrailer = new MessageTrailer()
         {
-            //Add one, to count UNH as well
-            SegmentCount = int.Parse(seg.Elements[0].Components[0]) + 1,
+            SegmentCount = int.Parse(seg.Elements[0].Components[0]),
             MessageReferenceNumber = seg.Elements[1].Components[0]
         };
+
+        if (ctx.MessageHeader.MessageReferenceNumber != ctx.MessageTrailer.MessageReferenceNumber)
+            throw new EdiSemanticsException("Message Reference Number in Header and Trailer are different.");
+
+        if(ctx.MessageTrailer.SegmentCount != ctx.CurrentMessageSegments.Count + 2)
+            throw new EdiSemanticsException($"Segment count in message trailer: {ctx.MessageTrailer.SegmentCount} " +
+                $"differs from actual: {ctx.CurrentMessageSegments.Count}");
 
         var message = new EdiMessage()
         {
@@ -111,19 +137,37 @@ public class EdifactInterchangeBuilder : IEdiInterchangeBuilder
 
     private static void HandleUNZ(EdiSegment seg, BuildContext ctx)
     {
+        if (ctx.InterchangeHeader is null)
+            throw new EdiSemanticsException("UNZ without UNB");
+
+        if (ctx.InterchangeTrailer is not null)
+            throw new EdiSemanticsException("UNZ already defined.");
+
+        if (ctx.MessageHeader is not null && ctx.MessageTrailer is null)
+            throw new EdiSemanticsException("Cannot close interchange while message is open.");
+
         ctx.InterchangeTrailer = new InterchangeTrailer()
         {
             MessageCount = int.Parse(seg.Elements[0].Components[0]),
             ControlReference = seg.Elements[1].Components[0],
         };
+
+        if (ctx.InterchangeTrailer.MessageCount != ctx.Messages.Count)
+            throw new EdiSemanticsException($"Message count in interchange trailer: {ctx.InterchangeTrailer.MessageCount} differs" +
+                $" than actual: {ctx.Messages.Count}.");
+
+        if (ctx.InterchangeHeader.ControlReference != ctx.InterchangeTrailer.ControlReference)
+            throw new EdiSemanticsException($"Interchange control reference in header: {ctx.InterchangeHeader.ControlReference}" +
+                $" and trailer: {ctx.InterchangeTrailer.ControlReference} are different.");
     }
 
-    private static void HandlePayload(EdiSegment seg, BuildContext ctx) 
+    private static void HandlePayload(EdiSegment seg, BuildContext ctx)
     {
         //Only when we are inside of message
-        if(ctx.MessageHeader is not null) 
-        {
+        if (ctx.MessageHeader is not null)
             ctx.CurrentMessageSegments.Add(seg);
-        }
+        else
+            throw new EdiSemanticsException("Payload segment outside message");
+
     }
 }
