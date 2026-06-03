@@ -5,6 +5,6 @@ namespace EdiSharp.Core.Interfaces;
 
 public interface IEdiEncodingDetector
 {
-    InputType InputType { get; }
+    EdiStandard InputType { get; }
     Encoding DetermineEncoding(byte[] fileBytes);
 }

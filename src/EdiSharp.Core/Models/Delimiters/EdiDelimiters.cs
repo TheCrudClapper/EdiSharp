@@ -1,4 +1,4 @@
-﻿namespace EdiSharp.Core.Models;
+﻿namespace EdiSharp.Core.Models.Delimiters;
 
 /// <summary>
 /// Represents the delimiter characters used for parsing and writing EDI messages (EDIFACT and X12).
@@ -36,17 +36,6 @@ public class EdiDelimiters
             EscapeCharacter = '?',
             RepetitionSeparator = '*',
             SegmentTerminator = '\''
-        };
-    }
-
-    public static EdiDelimiters DefaultX12() 
-    {
-        return new EdiDelimiters
-        {
-            ElementSeparator = '*',
-            SegmentTerminator = '~',
-            ComponentSeparator = ':',
-            RepetitionSeparator = '+',
         };
     }
 }

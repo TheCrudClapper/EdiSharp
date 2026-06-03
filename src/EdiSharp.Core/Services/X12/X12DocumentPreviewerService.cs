@@ -1,5 +1,5 @@
 ﻿using EdiSharp.Core.Enums;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
 using EdiSharp.Core.ServiceContracts;
 using System.Text;
 
@@ -7,7 +7,7 @@ namespace EdiSharp.Core.Services.X12;
 
 public class X12DocumentPreviewerService : IDocumentPreviewerService
 {
-    public InputType InputType => InputType.X12;
+    public EdiStandard InputType => EdiStandard.X12;
 
     public string GetRawDocumentPreview(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {

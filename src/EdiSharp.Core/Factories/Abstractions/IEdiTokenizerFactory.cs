@@ -5,5 +5,5 @@ namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IEdiTokenizerFactory
 {
-    IEdiTokenizer? TryCreate(InputType inputType);
+    IEdiTokenizer? TryCreate(EdiStandard inputType);
 }

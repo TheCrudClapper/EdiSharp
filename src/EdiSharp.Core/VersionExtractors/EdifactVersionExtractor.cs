@@ -1,13 +1,13 @@
 ﻿using EdiSharp.Core.Abstractions;
 using EdiSharp.Core.Enums;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
 using System.Text;
 
 namespace EdiSharp.Core.VersionExtractors;
 
 public class EdifactVersionExtractor : IEdiVersionExtractor
 {
-    public InputType InputType => InputType.EDIFACT;
+    public EdiStandard InputType => EdiStandard.EDIFACT;
 
     public string? Extract(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {

@@ -1,13 +1,13 @@
 ﻿using EdiSharp.Core.Abstractions;
 using EdiSharp.Core.Enums;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
 using System.Text;
 
 namespace EdiSharp.Core.DelimiterDetectors;
 
 public class X12DelimiterDetector : IEdiDelimiterDetector
 {
-    public InputType InputType => InputType.X12;
+    public EdiStandard InputType => EdiStandard.X12;
 
     public EdiDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding)
     {

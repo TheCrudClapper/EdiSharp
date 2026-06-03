@@ -5,5 +5,5 @@ namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IEdiDelimiterDetectorFactory
 {
-    IEdiDelimiterDetector? TryCreate(InputType inputType);
+    IEdiDelimiterDetector? TryCreate(EdiStandard inputType);
 }

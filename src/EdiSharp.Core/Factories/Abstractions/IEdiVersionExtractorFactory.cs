@@ -5,5 +5,5 @@ namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IEdiVersionExtractorFactory
 {
-    IEdiVersionExtractor? TryCreate(InputType type);
+    IEdiVersionExtractor? TryCreate(EdiStandard type);
 }

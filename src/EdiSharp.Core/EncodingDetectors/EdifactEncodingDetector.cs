@@ -6,7 +6,7 @@ namespace EdiSharp.Core.EncodingDetectors;
 
 public class EdifactEncodingDetector : IEdiEncodingDetector
 {
-    public InputType InputType => InputType.EDIFACT;
+    public EdiStandard InputType => EdiStandard.EDIFACT;
 
     public Encoding DetermineEncoding(byte[] fileBytes)
     {

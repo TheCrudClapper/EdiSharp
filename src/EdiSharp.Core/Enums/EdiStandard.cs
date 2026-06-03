@@ -1,6 +1,6 @@
 ﻿namespace EdiSharp.Core.Enums;
 
-public enum InputType
+public enum EdiStandard
 {
     EDIFACT,
     X12

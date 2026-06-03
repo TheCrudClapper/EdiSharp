@@ -1,4 +1,4 @@
-﻿namespace EdiSharp.Core.Models;
+﻿namespace EdiSharp.Core.Models.IntermediateModel;
 
 /// <summary>
 /// Represents an EDI segment identified by its tag and containing an ordered collection of elements.

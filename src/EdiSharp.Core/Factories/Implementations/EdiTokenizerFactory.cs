@@ -6,13 +6,13 @@ namespace EdiSharp.Core.Factories.Implementations;
 
 public class EdiTokenizerFactory : IEdiTokenizerFactory
 {
-    private readonly Dictionary<InputType, IEdiTokenizer> _map;
+    private readonly Dictionary<EdiStandard, IEdiTokenizer> _map;
     public EdiTokenizerFactory(IEnumerable<IEdiTokenizer> tokenizers)
     {
         _map = tokenizers.ToDictionary(t => t.InputType);
     }
 
-    public IEdiTokenizer? TryCreate(InputType inputType)
+    public IEdiTokenizer? TryCreate(EdiStandard inputType)
     {
         if (_map.TryGetValue(inputType, out var tokenizer))
             return tokenizer;

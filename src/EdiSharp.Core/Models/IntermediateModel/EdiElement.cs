@@ -1,4 +1,4 @@
-﻿namespace EdiSharp.Core.Models;
+﻿namespace EdiSharp.Core.Models.IntermediateModel;
 
 /// <summary>
 /// Represents an EDI data element containing the original raw text and its parsed component values.

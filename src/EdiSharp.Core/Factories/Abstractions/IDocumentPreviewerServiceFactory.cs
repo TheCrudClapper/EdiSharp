@@ -5,5 +5,5 @@ namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IDocumentPreviewerServiceFactory
 {
-    IDocumentPreviewerService? TryCreate(InputType input);
+    IDocumentPreviewerService? TryCreate(EdiStandard input);
 }

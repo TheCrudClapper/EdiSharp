@@ -1,13 +1,14 @@
 ﻿using EdiSharp.Core.Abstractions;
 using EdiSharp.Core.Enums;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
+using EdiSharp.Core.Models.IntermediateModel;
 using System.Text;
 
 namespace EdiSharp.Core.Tokenizers;
 
 public class EdifactTokenizer : IEdiTokenizer
 {
-    public InputType InputType => InputType.EDIFACT;
+    public EdiStandard InputType => EdiStandard.EDIFACT;
 
     public List<EdiSegment> Tokenize(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters)
     {

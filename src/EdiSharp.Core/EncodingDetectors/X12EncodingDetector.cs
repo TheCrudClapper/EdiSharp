@@ -6,7 +6,7 @@ namespace EdiSharp.Core.EncodingDetectors;
 
 public class X12EncodingDetector : IEdiEncodingDetector
 {
-    public InputType InputType => InputType.X12;
+    public EdiStandard InputType => EdiStandard.X12;
 
     public Encoding DetermineEncoding(byte[] fileBytes)
     {

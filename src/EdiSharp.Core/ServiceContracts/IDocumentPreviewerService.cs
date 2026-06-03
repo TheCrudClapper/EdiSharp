@@ -1,10 +1,10 @@
 ﻿using EdiSharp.Core.Enums;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
 using System.Text;
 
 namespace EdiSharp.Core.ServiceContracts;
 public interface IDocumentPreviewerService
 {
-    InputType InputType { get; }
+    EdiStandard InputType { get; }
     string GetRawDocumentPreview(byte[] fileBytes, Encoding encoding, EdiDelimiters delimiters);
 }

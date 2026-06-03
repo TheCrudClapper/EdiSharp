@@ -26,7 +26,7 @@ public class EdiProcessingService : IEdiProcessingService
         var interchangeBuilder = _interchangeBuilderFactory.TryCreate(context.options.InputType)
             ?? throw new EdiInstantiationException($"No intechange builder for {context.options.InputType} type");
 
-        var splittedEdi = interchangeBuilder.Build(tokenizedEdi, context.options.Encoding);
+        var buildedEdi = interchangeBuilder.Build(tokenizedEdi, context.options.Encoding);
 
         throw new NotImplementedException();
     }

@@ -5,5 +5,5 @@ namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IEdiEncodingDetectorFactory
 {
-    IEdiEncodingDetector? TryCreate(InputType inputType);
+    IEdiEncodingDetector? TryCreate(EdiStandard inputType);
 }

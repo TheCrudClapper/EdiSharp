@@ -1,11 +1,11 @@
 ﻿using EdiSharp.Core.Enums;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
 using System.Text;
 
 namespace EdiSharp.Core.Abstractions;
 
 public interface IEdiDelimiterDetector
 {
-    InputType InputType { get; }
+    EdiStandard InputType { get; }
     EdiDelimiters DetectDelimiters(byte[] fileBytes, Encoding encoding);
 }

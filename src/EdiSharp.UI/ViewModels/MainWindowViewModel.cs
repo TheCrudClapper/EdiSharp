@@ -115,7 +115,7 @@ public partial class MainWindowViewModel(
             return;
         }
 
-        Result<FileInspectionResult>? result = null;
+        Result<FileInspectionResult> result;
 
         try
         {
@@ -128,14 +128,14 @@ public partial class MainWindowViewModel(
             return;
         }
   
-        if (result != null && result.IsFailure)
+        if (result is not null && result.IsFailure)
         {
             Error = result.Error.Description;
             PushMessage(Error, true);
             return;
         }
 
-        FileInspectionResult = result.Value;
+        FileInspectionResult = result!.Value;
         FileName = file.Name;
         SegmentCount = result.Value.SegmentCount;
         EncodingName = result.Value.Encoding.EncodingName;

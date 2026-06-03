@@ -2,7 +2,7 @@
 using EdiSharp.Core.Enums;
 using EdiSharp.Core.Exceptions;
 using EdiSharp.Core.Factories.Abstractions;
-using EdiSharp.Core.Models;
+using EdiSharp.Core.Models.Delimiters;
 using EdiSharp.Core.ServiceContracts;
 using EdiSharp.Domain.Errors;
 using EdiSharp.Domain.ResultTypes;
@@ -58,7 +58,7 @@ public class FileInspectionService : IFileInspectionService
         };
     }
 
-    private static InputType? DetermineInputType(byte[] fileBytes)
+    private static EdiStandard? DetermineInputType(byte[] fileBytes)
     {
         ReadOnlySpan<byte> data = fileBytes;
         if (data.Length >= 3 &&
@@ -84,11 +84,11 @@ public class FileInspectionService : IFileInspectionService
         data = data.Slice(i);
 
         if (data.Length >= 3 && data[0] == 'I' && data[1] == 'S' && data[2] == 'A')
-            return InputType.X12;
+            return EdiStandard.X12;
 
         if (data.Length >= 3 && (data[0] == 'U' && data[1] == 'N' && data[2] == 'A') ||
             (data[0] == 'U' && data[1] == 'N' && data[2] == 'B'))
-            return InputType.EDIFACT;
+            return EdiStandard.EDIFACT;
 
         return null;
     }

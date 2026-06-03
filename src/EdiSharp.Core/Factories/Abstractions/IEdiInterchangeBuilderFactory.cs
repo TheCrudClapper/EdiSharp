@@ -5,5 +5,5 @@ namespace EdiSharp.Core.Factories.Abstractions;
 
 public interface IEdiInterchangeBuilderFactory
 {
-    IEdiInterchangeBuilder? TryCreate(InputType inputType);
+    IEdiInterchangeBuilder? TryCreate(EdiStandard inputType);
 }
