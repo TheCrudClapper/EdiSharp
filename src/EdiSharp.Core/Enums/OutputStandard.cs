@@ -1,6 +1,6 @@
 ﻿namespace EdiSharp.Core.Enums;
 
-public enum OutputType
+public enum OutputStandard
 {
     JSON,
     XML
