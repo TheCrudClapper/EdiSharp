@@ -9,6 +9,6 @@ public record ParseOptions
     public required EdiStandard InputType { get; init; }
     public required Encoding Encoding { get; init; }
     public required EdiDelimiters Delimiters { get; init; }
-    public required OutputType OutputType { get; init; }
+    public required OutputStandard OutputType { get; init; }
     public required bool Validate { get; init; }
 }

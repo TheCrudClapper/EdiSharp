@@ -159,9 +159,9 @@ public partial class MainWindowViewModel(
     [RelayCommand]
     public async Task Parse()
     {
-        OutputType? outputType =
-            IsJsonChecked ? OutputType.JSON :
-            IsXmlChecked ? OutputType.XML :
+        OutputStandard? outputType =
+            IsJsonChecked ? OutputStandard.JSON :
+            IsXmlChecked ? OutputStandard.XML :
             null;
 
         if (_fileBytes is null || outputType is null || FileInspectionResult is null)

@@ -2,5 +2,6 @@
 
 public record InterchangeTrailer
 {
-    public int? MessageCount { get; init; }
+    public required int MessageCount { get; init; }
+    public required string ControlReference { get; init; }
 }

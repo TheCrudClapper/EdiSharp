@@ -2,7 +2,7 @@
 
 public record EdiMessage
 {
-    public required MessageIdentifier Identifier { get; init; }
-    public string? ReferenceNumber { get; init; }
-    public required IReadOnlyList<EdiSegment> Segments { get; init; }
+    public required MessageHeader Header { get; init; }
+    public IReadOnlyList<EdiSegment> Segments { get; init; } = [];
+    public required MessageTrailer Trailer { get; init; }
 }

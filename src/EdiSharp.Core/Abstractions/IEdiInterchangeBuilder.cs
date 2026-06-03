@@ -7,5 +7,5 @@ namespace EdiSharp.Core.Abstractions;
 public interface IEdiInterchangeBuilder
 {
     EdiStandard InputType { get; }
-    EdiInterchange Build(List<EdiSegment> segments, Encoding encoding);
+    EdiInterchange Build(List<EdiSegment> segments);
 }
