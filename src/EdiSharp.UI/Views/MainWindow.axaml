@@ -78,7 +78,7 @@
 										   FontWeight="Bold"
 										   FontSize="15"/>
 
-								<TextBlock Text="{Binding FileName}"
+								<TextBlock Text="{Binding Context.FileName}"
 										   TextWrapping="Wrap"/>
 
 								<Border Background="{DynamicResource BorderBrushColor}"
@@ -97,7 +97,7 @@
 
 									<TextBlock Grid.Row="0"
 											   Grid.Column="1"
-											   Text="{Binding EdiVersion}"/>
+											   Text="{Binding Context.EdiStandard}"/>
 
 									<TextBlock Grid.Row="1"
 											   Text="Segments:"
@@ -105,7 +105,7 @@
 
 									<TextBlock Grid.Row="1"
 											   Grid.Column="1"
-											   Text="{Binding SegmentCount}"/>
+											   Text="{Binding Context.Inspection.SegmentCount}"/>
 
 									<TextBlock Grid.Row="2"
 											   Text="Encoding:"
@@ -113,7 +113,7 @@
 
 									<TextBlock Grid.Row="2"
 											   Grid.Column="1"
-											   Text="{Binding EncodingName}"/>
+											   Text="{Binding Context.EncodingName}"/>
 
 								</Grid>
 
@@ -282,25 +282,25 @@
 
 					<StackPanel Spacing="2">
 
-						<TextBlock Text="{Binding FileName}"
+						<TextBlock Text="{Binding Context.FileName}"
 								   FontWeight="SemiBold"
 								   FontSize="16"/>
 
 						<StackPanel Orientation="Horizontal">
 
 							<TextBlock Opacity="0.7">
-								<Run Text="{Binding SegmentCount}"/>
+								<Run Text="{Binding Context.Inspection.SegmentCount}"/>
 								<Run Text="Segments"/>
 							</TextBlock>
 
 							<TextBlock Text=" · " FontWeight="700" Opacity="0.7"/>
 
-							<TextBlock Text="{Binding EdiVersion}"
+							<TextBlock Text="{Binding Context.EdiStandard}"
 									   Opacity="0.7"/>
 
 							<TextBlock Text=" · " FontWeight="700" Opacity="0.7"/>
 
-							<TextBlock Text="{Binding EncodingName}"
+							<TextBlock Text="{Binding Context.EncodingName}"
 									   Opacity="0.7"/>
 
 						</StackPanel>
@@ -314,7 +314,7 @@
 							Height="30"
 							Padding="14,6">
 
-						<TextBlock Text="{Binding InputTypeText}"
+						<TextBlock Text="{Binding Context.InputEdiStandard}"
 								   Foreground="White"
 								   FontWeight="Bold"/>
 
@@ -331,7 +331,7 @@
 				<!-- RAW -->
 				<TabItem Header="Raw">
 
-					<TextBox Text="{Binding RawDocument}"
+					<TextBox Text="{Binding Context.RawPreview}"
 							 Classes="documentTextBox"/>
 
 				</TabItem>

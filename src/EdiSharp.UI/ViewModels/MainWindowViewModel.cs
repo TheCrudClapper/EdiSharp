@@ -6,8 +6,12 @@ using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
 using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.ServiceContracts;
+using EdiSharp.Core.Services;
 using EdiSharp.Domain.ResultTypes;
+using EdiSharp.UI.Enums;
 using EdiSharp.UI.Helpers;
+using EdiSharp.UI.Models;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -19,7 +23,7 @@ public partial class MainWindowViewModel(
     Func<TopLevel?> topLevelAccessor,
     IEdiProcessingService service,
     IFileInspectionService fileInspectionService,
-    IDocumentPreviewerServiceFactory documentPrevServFact)
+    IDocumentPreviewerServiceFactory previewFactory)
     : ViewModelBase
 {
 
@@ -28,15 +32,13 @@ public partial class MainWindowViewModel(
     private const string DefaultFileDetailsText = "Unknown";
 
     [ObservableProperty]
+    private UIState _state = UIState.Idle;
+
+    [ObservableProperty]
     private bool _validate = false;
 
     [ObservableProperty]
     private bool _isJsonChecked = false;
-
-    public bool IsDiscardButtonVisible
-        => RawDocument is not null;
-    public bool IsErrorVisible
-        => Error is not null;
 
     [ObservableProperty]
     private bool _isXmlChecked = false;
@@ -45,36 +47,33 @@ public partial class MainWindowViewModel(
     private string? _error;
 
     [ObservableProperty]
-    private string _fileName = DefaultFileText;
-
-    [ObservableProperty]
-    private string _ediVersion = DefaultFileDetailsText;
-
-    [ObservableProperty]
-    private string _inputTypeText = DefaultFileDetailsText;
-
-    [ObservableProperty]
-    private int _segmentCount = 0;
-
-    [ObservableProperty]
-    private string _encodingName = DefaultFileDetailsText;
-
-    [ObservableProperty]
-    private string? _rawDocument;
+    private DocumentContext? _context;
 
     [ObservableProperty]
     private ObservableCollection<StatusMessageViewModel> _statusMessages = new();
 
-    //Selected file bytes
-    private byte[]? _fileBytes;
-    private FileInspectionResult? FileInspectionResult { get; set; }
+
+    public bool IsBusy =>
+    State is UIState.LoadingFile or UIState.Inspecting or UIState.Parsing;
+
+    public bool IsDiscardButtonVisible =>
+        Context is not null;
+
+    public bool IsErrorVisible =>
+        !string.IsNullOrWhiteSpace(Error);
+
+    public bool CanParse =>
+        State == UIState.ReadyToParse;
     #endregion
 
-    partial void OnErrorChanged(string? value)
-       => OnPropertyChanged(nameof(IsErrorVisible));
-
-    partial void OnRawDocumentChanged(string? value)
-        => OnPropertyChanged(nameof(IsDiscardButtonVisible));
+    private void SetState(UIState state)
+    {
+        State = state;
+        OnPropertyChanged(nameof(IsBusy));
+        OnPropertyChanged(nameof(IsDiscardButtonVisible));
+        OnPropertyChanged(nameof(IsErrorVisible));
+        OnPropertyChanged(nameof(CanParse));
+    }
 
     [RelayCommand]
     public async Task PickFile()
@@ -83,128 +82,120 @@ public partial class MainWindowViewModel(
         if (topLevel is null)
             return;
 
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
-        {
-            AllowMultiple = false,
-        });
-
-        if (files.Count == 0)
-            return;
-
-        var file = files[0];
-
-        var extension = Path.GetExtension(file.Name);
-        if (extension != ".edi"
-            && extension != ".edifact"
-            && extension != ".x12"
-            && extension != ".txt")
-        {
-            Error = "Wrong file extension. Supported types: .edi, .edifact, .x12";
-            PushMessage(Error, true);
-            return;
-        }
+        SetState(UIState.LoadingFile);
 
         try
         {
-            _fileBytes = await File.ReadAllBytesAsync(file.Path.LocalPath);
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                AllowMultiple = false
+            });
+
+            if (files.Count == 0)
+            {
+                SetState(UIState.Idle);
+                return;
+            }
+
+            var file = files[0];
+
+            var ext = Path.GetExtension(file.Name);
+            if (ext is not ".edi" and not ".edifact" and not ".x12" and not ".txt")
+            {
+                RaiseError("Unsupported file extension");
+                return;
+            }
+
+            var bytes = await File.ReadAllBytesAsync(file.Path.LocalPath);
+
+            SetState(UIState.Inspecting);
+
+            var inspectionResult = fileInspectionService.Inspect(bytes);
+
+            if (inspectionResult.IsFailure)
+            {
+                RaiseError(inspectionResult.Error.Description);
+                return;
+            }
+
+            var inspection = inspectionResult.Value;
+
+            var previewer = previewFactory.TryCreate(inspection.InputType);
+            if (previewer is null)
+            {
+                RaiseError("Preview service not available");
+                return;
+            }
+
+            var preview = previewer.GetRawDocumentPreview(bytes, inspection.Encoding, inspection.Delimiters);
+
+            Context = new DocumentContext
+            {
+                Bytes = bytes,
+                Inspection = inspection,
+                FileName = file.Name,
+                RawPreview = preview
+            };
+
+            SetState(UIState.ReadyToParse);
+
+            PushMessage("File loaded successfully", false);
+            Error = null;
         }
-        catch
+        catch (Exception ex)
         {
-            Error = "Failed to read selected file";
-            PushMessage(Error, true);
-            return;
+            RaiseError(ex.Message);
         }
-
-        Result<FileInspectionResult> result;
-
-        try
-        {
-            result = fileInspectionService.Inspect(_fileBytes);
-        }
-        catch (Exception ex) 
-        {
-            Error = ex.Message;
-            PushMessage(Error, true);
-            return;
-        }
-  
-        if (result is not null && result.IsFailure)
-        {
-            Error = result.Error.Description;
-            PushMessage(Error, true);
-            return;
-        }
-
-        FileInspectionResult = result!.Value;
-        FileName = file.Name;
-        SegmentCount = result.Value.SegmentCount;
-        EncodingName = result.Value.Encoding.EncodingName;
-        EdiVersion = result.Value.Version;
-        Error = null;
-        InputTypeText = InputTypeToStringConverter.ToStringInputType(result.Value.InputType);
-
-        var documentPreviewerService = documentPrevServFact.TryCreate(result.Value.InputType);
-
-        if (documentPreviewerService is null) 
-        {
-            Error = "Failed to create preview of currently selected file.";
-            PushMessage(Error, true);
-            RawDocument = "Failed to create preview.";
-            return;
-        }
-
-        RawDocument = documentPreviewerService.GetRawDocumentPreview(_fileBytes, result.Value.Encoding, result.Value.Delimiters);
     }
 
     [RelayCommand]
     public async Task Parse()
     {
+        if (Context is null)
+            return;
+
         OutputStandard? outputType =
             IsJsonChecked ? OutputStandard.JSON :
             IsXmlChecked ? OutputStandard.XML :
             null;
 
-        if (_fileBytes is null || outputType is null || FileInspectionResult is null)
+        if (outputType is null)
             return;
-
-        var request = new EdiParseContext(
-            _fileBytes,
-            new ParseOptions()
-            {
-                Validate = Validate,
-                Delimiters = FileInspectionResult.Delimiters,
-                Encoding = FileInspectionResult.Encoding,
-                InputType = FileInspectionResult.InputType,
-                OutputType = outputType.GetValueOrDefault()
-            });
 
         try
         {
+            var request = new EdiParseContext(
+            Context.Bytes,
+            new ParseOptions()
+            {
+                Validate = Validate,
+                Delimiters = Context.Inspection.Delimiters,
+                Encoding = Context.Inspection.Encoding,
+                InputType = Context.Inspection.InputType,
+                OutputType = outputType.Value
+            });
+
+
             await service.ProcessAsync(request);
+
+            SetState(UIState.ReadyToParse);
         }
-        catch(Exception ex) 
+        catch (Exception ex)
         {
-            Error = ex.Message;
-            PushMessage(Error, true);
-            return;
+            RaiseError(ex.Message);
         }
-        
+
     }
 
     [RelayCommand]
     private void DiscardSelectedFile()
     {
-        _fileBytes = null;
-        FileName = DefaultFileText;
-        EncodingName = DefaultFileDetailsText;
-        EdiVersion = DefaultFileDetailsText;
-        InputTypeText = DefaultFileDetailsText;
-        RawDocument = null;
-        SegmentCount = 0;
-        FileInspectionResult = null;
+        Context = null;
+        Error = null;
+        SetState(UIState.Idle);
     }
 
-    private void PushMessage(string message, bool isError) 
+    private void PushMessage(string message, bool isError)
     {
         StatusMessages.Insert(0, new StatusMessageViewModel
         {
@@ -214,8 +205,15 @@ public partial class MainWindowViewModel(
         });
     }
 
+    private void RaiseError(string message)
+    {
+        Error = message;
+        PushMessage(message, true);
+        SetState(UIState.Error);
+    }
+
     [RelayCommand]
-    public void FlushMessages() 
+    public void FlushMessages()
     {
         StatusMessages.Clear();
     }
