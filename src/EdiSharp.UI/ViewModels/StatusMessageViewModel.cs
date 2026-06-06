@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EdiSharp.UI.Enums;
+using System;
 
 namespace EdiSharp.UI.ViewModels;
 

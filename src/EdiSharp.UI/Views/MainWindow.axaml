@@ -78,7 +78,7 @@
 										   FontWeight="Bold"
 										   FontSize="15"/>
 
-								<TextBlock Text="{Binding Context.FileName}"
+								<TextBlock Text="{Binding Document.FileName}"
 										   TextWrapping="Wrap"/>
 
 								<Border Background="{DynamicResource BorderBrushColor}"
@@ -97,7 +97,7 @@
 
 									<TextBlock Grid.Row="0"
 											   Grid.Column="1"
-											   Text="{Binding Context.EdiStandard}"/>
+											   Text="{Binding Document.EdiStandard}"/>
 
 									<TextBlock Grid.Row="1"
 											   Text="Segments:"
@@ -105,7 +105,7 @@
 
 									<TextBlock Grid.Row="1"
 											   Grid.Column="1"
-											   Text="{Binding Context.Inspection.SegmentCount}"/>
+											   Text="{Binding Document.SegmentCount}"/>
 
 									<TextBlock Grid.Row="2"
 											   Text="Encoding:"
@@ -113,7 +113,7 @@
 
 									<TextBlock Grid.Row="2"
 											   Grid.Column="1"
-											   Text="{Binding Context.EncodingName}"/>
+											   Text="{Binding Document.EncodingName}"/>
 
 								</Grid>
 
@@ -242,15 +242,37 @@
 														   FontWeight="Bold"
 														   IsVisible="{Binding IsError}"
 														   VerticalAlignment="Top"/>
+												
+												<TextBlock Grid.Column="0"
+														   Text="Success: "
+														   FontFamily="Consolas"
+														   Foreground="DarkGreen"
+														   FontWeight="Bold"
+														   IsVisible="{Binding !IsError}"
+														   VerticalAlignment="Top"/>
 
 												<TextBlock Grid.Column="1"
 														   TextWrapping="Wrap"
 														   Foreground="DarkRed"
+														   Text="{Binding Message}"
+														   IsVisible="{Binding IsError}"
 														   VerticalAlignment="Top">
 													<Run Text="{Binding Message}"/>
 													<Run Text="At "/>
 													<Run Text="{Binding TimeStamp}" FontStyle="Oblique"/>
 												</TextBlock>
+
+												<TextBlock Grid.Column="1"
+														   TextWrapping="Wrap"
+														   Foreground="Green"
+														   Text="{Binding Message}"
+														   IsVisible="{Binding !IsError}"
+														   VerticalAlignment="Top">
+													<Run Text="{Binding Message}"/>
+													<Run Text="At "/>
+													<Run Text="{Binding TimeStamp}" FontStyle="Oblique"/>
+												</TextBlock>
+
 											</Grid>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
@@ -282,25 +304,25 @@
 
 					<StackPanel Spacing="2">
 
-						<TextBlock Text="{Binding Context.FileName}"
+						<TextBlock Text="{Binding Document.FileName}"
 								   FontWeight="SemiBold"
 								   FontSize="16"/>
 
 						<StackPanel Orientation="Horizontal">
 
 							<TextBlock Opacity="0.7">
-								<Run Text="{Binding Context.Inspection.SegmentCount}"/>
+								<Run Text="{Binding Document.SegmentCount}"/>
 								<Run Text="Segments"/>
 							</TextBlock>
 
 							<TextBlock Text=" · " FontWeight="700" Opacity="0.7"/>
 
-							<TextBlock Text="{Binding Context.EdiStandard}"
+							<TextBlock Text="{Binding Document.EdiStandard}"
 									   Opacity="0.7"/>
 
 							<TextBlock Text=" · " FontWeight="700" Opacity="0.7"/>
 
-							<TextBlock Text="{Binding Context.EncodingName}"
+							<TextBlock Text="{Binding Document.EncodingName}"
 									   Opacity="0.7"/>
 
 						</StackPanel>
@@ -314,7 +336,7 @@
 							Height="30"
 							Padding="14,6">
 
-						<TextBlock Text="{Binding Context.InputEdiStandard}"
+						<TextBlock Text="{Binding Document.EdiStandard}"
 								   Foreground="White"
 								   FontWeight="Bold"/>
 
@@ -331,7 +353,7 @@
 				<!-- RAW -->
 				<TabItem Header="Raw">
 
-					<TextBox Text="{Binding Context.RawPreview}"
+					<TextBox Text="{Binding Document.RawPreview}"
 							 Classes="documentTextBox"/>
 
 				</TabItem>

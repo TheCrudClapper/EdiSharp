@@ -6,12 +6,8 @@ using EdiSharp.Core.DTO;
 using EdiSharp.Core.Enums;
 using EdiSharp.Core.Factories.Abstractions;
 using EdiSharp.Core.ServiceContracts;
-using EdiSharp.Core.Services;
-using EdiSharp.Domain.ResultTypes;
 using EdiSharp.UI.Enums;
-using EdiSharp.UI.Helpers;
 using EdiSharp.UI.Models;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -19,18 +15,10 @@ using System.Threading.Tasks;
 
 namespace EdiSharp.UI.ViewModels;
 
-public partial class MainWindowViewModel(
-    Func<TopLevel?> topLevelAccessor,
-    IEdiProcessingService service,
-    IFileInspectionService fileInspectionService,
-    IDocumentPreviewerServiceFactory previewFactory)
-    : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase
 {
 
-    #region Fields
-    private const string DefaultFileText = "Choose EDIFACT File";
-    private const string DefaultFileDetailsText = "Unknown";
-
+    #region Fields & Constructors
     [ObservableProperty]
     private UIState _state = UIState.Idle;
 
@@ -50,11 +38,30 @@ public partial class MainWindowViewModel(
     private DocumentContext? _context;
 
     [ObservableProperty]
-    private ObservableCollection<StatusMessageViewModel> _statusMessages = new();
+    private DocumentViewModel? _document;
 
+    [ObservableProperty]
+    private ObservableCollection<StatusMessageViewModel> _statusMessages = new();
+    private readonly Func<TopLevel?> _topLevelAccessor;
+    private readonly IEdiProcessingService _service;
+    private readonly IFileInspectionService _fileInspectionService;
+    private readonly IDocumentPreviewerServiceFactory _previewFactory;
+
+    public MainWindowViewModel(
+        Func<TopLevel?> topLevelAccessor,
+        IEdiProcessingService service,
+        IFileInspectionService fileInspectionService,
+        IDocumentPreviewerServiceFactory previewFactory)
+    {
+        _topLevelAccessor = topLevelAccessor;
+        _service = service;
+        _fileInspectionService = fileInspectionService;
+        _previewFactory = previewFactory;
+        _document = DocumentViewModel.GetInitalState();
+    }
 
     public bool IsBusy =>
-    State is UIState.LoadingFile or UIState.Inspecting or UIState.Parsing;
+        State is UIState.LoadingFile or UIState.Inspecting or UIState.Parsing;
 
     public bool IsDiscardButtonVisible =>
         Context is not null;
@@ -64,6 +71,7 @@ public partial class MainWindowViewModel(
 
     public bool CanParse =>
         State == UIState.ReadyToParse;
+
     #endregion
 
     private void SetState(UIState state)
@@ -78,7 +86,7 @@ public partial class MainWindowViewModel(
     [RelayCommand]
     public async Task PickFile()
     {
-        var topLevel = topLevelAccessor();
+        var topLevel = _topLevelAccessor();
         if (topLevel is null)
             return;
 
@@ -110,7 +118,7 @@ public partial class MainWindowViewModel(
 
             SetState(UIState.Inspecting);
 
-            var inspectionResult = fileInspectionService.Inspect(bytes);
+            var inspectionResult = _fileInspectionService.Inspect(bytes);
 
             if (inspectionResult.IsFailure)
             {
@@ -120,7 +128,7 @@ public partial class MainWindowViewModel(
 
             var inspection = inspectionResult.Value;
 
-            var previewer = previewFactory.TryCreate(inspection.InputType);
+            var previewer = _previewFactory.TryCreate(inspection.InputType);
             if (previewer is null)
             {
                 RaiseError("Preview service not available");
@@ -133,14 +141,21 @@ public partial class MainWindowViewModel(
             {
                 Bytes = bytes,
                 Inspection = inspection,
-                FileName = file.Name,
-                RawPreview = preview
             };
 
-            SetState(UIState.ReadyToParse);
+            Document = new DocumentViewModel
+            {
+                FileName = file.Name,
+                RawPreview = preview,
+                EdiStandard = inspection.InputType.ToString(),
+                EncodingName = inspection.Encoding.EncodingName,
+                SegmentCount = inspection.SegmentCount
+            };
 
-            PushMessage("File loaded successfully", false);
             Error = null;
+            SetState(UIState.ReadyToParse);
+            PushMessage("File loaded successfully", false);
+            
         }
         catch (Exception ex)
         {
@@ -176,7 +191,7 @@ public partial class MainWindowViewModel(
             });
 
 
-            await service.ProcessAsync(request);
+            await _service.ProcessAsync(request);
 
             SetState(UIState.ReadyToParse);
         }
@@ -192,6 +207,7 @@ public partial class MainWindowViewModel(
     {
         Context = null;
         Error = null;
+        Document = DocumentViewModel.GetInitalState();
         SetState(UIState.Idle);
     }
 
@@ -222,6 +238,7 @@ public partial class MainWindowViewModel(
     public void DeleteError()
     {
         Error = null;
+        OnPropertyChanged(nameof(IsErrorVisible));
     }
 }
 
